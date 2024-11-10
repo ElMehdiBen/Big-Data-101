@@ -1,11 +1,3 @@
-img {
-    display: block;
-    float: none;
-    margin-left: auto;
-    margin-right: auto;
-    width: 50%;
-}
-
 Big Data 101- A Beginner’s Guide To Big Data
 ============================================
 
