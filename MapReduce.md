@@ -284,3 +284,11 @@ The command for running a MapReduce code is:
 _hadoop jar hadoop-mapreduce-example.jar WordCount /sample/input /sample/output_
 
 Now, you guys have a basic understanding of the MapReduce framework. You would have realized how the MapReduce framework facilitates us to write code to process huge data present in the HDFS.
+
+
+# Repo Elements
+1. [History](https://github.com/ElMehdiBen/Big-Data-101/edit/main/README.md)
+2. [Hadoop](https://github.com/ElMehdiBen/Big-Data-101/blob/main/Hadoop.md)
+3. [HDFS](https://github.com/ElMehdiBen/Big-Data-101/edit/main/HDFS.md)
+4. [MapReduce](https://github.com/ElMehdiBen/Big-Data-101/edit/main/MapReduce.md)
+5. [Hadoop 3](https://github.com/ElMehdiBen/Big-Data-101/edit/main/Hadoop3.md) 
