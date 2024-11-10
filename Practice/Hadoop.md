@@ -24,20 +24,15 @@ Environment Used
 Host
 ----
 
-*   macOS 14.3
-*   Apple M1 chip
-*   16 GB of memory
+*   Ubuntu 20 on Virtual Box
 
 Docker
 ------
 
 *   Docker Version: 25.0.5
 *   Docker Compose Version: 2.22.0
-*   Orbstack Version: 1.5.1
 *   Hadoop image: apache/hadoop:3
-*   MySQL image: mysql:latest
 *   [Optional] Firefox image: jlesage/firefox:latest
-*   [Optional] Custom Hadoop image: bayuadiwibowo/hadoop-namenode:latest
 
 Hadoop Base
 ===========
