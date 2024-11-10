@@ -290,6 +290,7 @@ Zeppelin will be added to the Namenode, download the tarball installer from [htt
 
 ```
 hadoop % docker exec -ti hadoop-namenode-1 /bin/bash
+namenode % sudo wget https://dlcdn.apache.org/zeppelin/zeppelin-0.11.0/zeppelin-0.11.0-bin-all.tgz
 namenode % tar zxvf zeppelin-0.11.0-bin-all.tgz 
 namenode % mv zeppelin-0.11.0-bin-all /opt/zeppelin
 namenode % cp /opt/zeppelin/conf/zeppelin-env.sh.template /opt/zeppelin/conf/zeppelin-env.sh
