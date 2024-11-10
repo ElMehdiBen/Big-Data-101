@@ -80,3 +80,11 @@ We will understand these features in detail when we will explore the HDFS Archit
 > **_Data Locality:_** Data locality talks about moving processing unit to data rather than the data to processing unit. In our traditional system, we used to bring the data to the application layer and then process it. But now, because of the architecture and huge volume of the data, bringing the data to the application layer will reduce the network performance to a noticeable extent. So, in HDFS, we bring the computation part to the data nodes where the data is residing. Hence, you are not moving the data, you are bringing the program or processing part to the data.
 
 With this, we come to an end to this article on HDFS.
+
+
+# Repo Elements
+1. [History](https://github.com/ElMehdiBen/Big-Data-101/edit/main/README.md)
+2. [Hadoop](https://github.com/ElMehdiBen/Big-Data-101/blob/main/Hadoop.md)
+3. [HDFS](https://github.com/ElMehdiBen/Big-Data-101/edit/main/HDFS.md)
+4. [MapReduce](https://github.com/ElMehdiBen/Big-Data-101/edit/main/MapReduce.md)
+5. [Hadoop 3](https://github.com/ElMehdiBen/Big-Data-101/edit/main/Hadoop3.md) 
