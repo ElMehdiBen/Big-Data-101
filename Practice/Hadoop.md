@@ -149,8 +149,6 @@ hadoop % docker-compose up -d
 UIs Check
 ---------
 
-Open the `firefox` by accessing [http://localhost:5800/](http://localhost:5800/). Try to access these UIs from the firefox.
-
 *   Namenode UI: [http://namenode:9870/](http://namenode:9870/)
 *   ResourceManager UI: [http://resourcemanager:8088/](http://resourcemanager:8088/cluster)
 
@@ -243,8 +241,7 @@ namenode % /opt/zeppelin/bin/zeppelin-daemon.sh stop
 
 Accessing the UI
 ----------------
-
-Open the `firefox` by accessing [http://localhost:5800/](http://localhost:5800/). Try to access [http://namenode:8080/](http://namenode:8080/) from the firefox.
+Try to access [http://namenode:8080/](http://namenode:8080/)
 
 Reading HDFS File with Zeppelin
 -------------------------------
@@ -342,11 +339,6 @@ services:
     command: [ "yarn", "nodemanager" ]
     env_file:
       - ./config
-  firefox:
-    image: jlesage/firefox
-    hostname: firefox
-    ports:
-      - 5800:5800
 ```
 
 Access MySQL and create `metastore_db` database, it will store all metadata of the Hive.
