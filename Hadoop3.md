@@ -217,3 +217,11 @@ A series of changes have been made to heap management for Hadoop daemons as well
 *   Simplification of the configuration of the map and reduce task heap sizes, so the desired heap size no longer needs to be specified in both the task configuration and as a Java option. Existing configs that already specify both are not affected by this change.
 
 I hope this article was informative and added value to you. Apache community is still working on multiple enhancements which might come up until beta phase.
+
+
+# Repo Elements
+1. [History](https://github.com/ElMehdiBen/Big-Data-101/edit/main/README.md)
+2. [Hadoop](https://github.com/ElMehdiBen/Big-Data-101/blob/main/Hadoop.md)
+3. [HDFS](https://github.com/ElMehdiBen/Big-Data-101/edit/main/HDFS.md)
+4. [MapReduce](https://github.com/ElMehdiBen/Big-Data-101/edit/main/MapReduce.md)
+5. [Hadoop 3](https://github.com/ElMehdiBen/Big-Data-101/edit/main/Hadoop3.md) 
