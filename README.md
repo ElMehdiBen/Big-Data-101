@@ -169,8 +169,8 @@ We have a savior to deal with Big Data challenges — its **_Hadoop_**. Hadoop i
 Hadoop with its distributed processing handles large volumes of structured and unstructured data more efficiently than the traditional enterprise data warehouse. Hadoop makes it possible to run applications on systems with thousands of commodity hardware nodes, and to handle thousands of terabytes of data. Organizations are adopting Hadoop because it is an open source software and can run on commodity hardware (your personal computer). The initial cost savings are dramatic as commodity hardware is very cheap. As the organizational data increases, you need to add more & more commodity hardware on the fly to store it and hence, Hadoop proves to be economical. Additionally, Hadoop has a robust Apache community behind it that continues to contribute to its advancement.
 
 # Repo Elements
-1. (https://github.com/ElMehdiBen/Big-Data-101/edit/main/README.md)
-2. (https://github.com/ElMehdiBen/Big-Data-101/blob/main/Hadoop.md)
-3. (https://github.com/ElMehdiBen/Big-Data-101/edit/main/HDFS.md)
-4. (https://github.com/ElMehdiBen/Big-Data-101/edit/main/MapReduce.md)
-5. (https://github.com/ElMehdiBen/Big-Data-101/edit/main/Hadoop3.md) 
+1. [History](https://github.com/ElMehdiBen/Big-Data-101/edit/main/README.md)
+2. [Hadoop](https://github.com/ElMehdiBen/Big-Data-101/blob/main/Hadoop.md)
+3. [HDFS](https://github.com/ElMehdiBen/Big-Data-101/edit/main/HDFS.md)
+4. [MapReduce](https://github.com/ElMehdiBen/Big-Data-101/edit/main/MapReduce.md)
+5. [Hadoop 3](https://github.com/ElMehdiBen/Big-Data-101/edit/main/Hadoop3.md) 
