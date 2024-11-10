@@ -175,98 +175,23 @@ Notes:
 *   Replace `HADOOP_VERSION` JAR with available version under the `share/hadoop/mapreduce` directory.
 *   Find the detailed job information from the Namenode UI.
 
-Stopping Cluster
-----------------
-
-```
-hadoop % docker-compose down
-```
-
 Add Spark to Namenode
 =====================
 
 MapReduce is the default execution engine of Hadoop. Installing Spark is necessary to be able to submit a Spark job. Add and edit the following files and rebuild the cluster with `docker-compse up` command.
 
-Directory Structure
--------------------
-
-```
-hadoop % ls -l
-**-rw-r–r-- 1 user1 staff 1764 Oct 1 13:25 Makefile**
--rw-r–r-- 1 user1 staff 1764 Oct 1 13:25 config
--rw-r–r-- 1 user1 staff 751 Oct 1 13:04 docker-compose.yaml
-```
-
-docker-compose.yaml
--------------------
-
-```
-version: "2"
-services:
-  namenode:
-    image: apache/hadoop:3
-    hostname: namenode
-    volumes:
-      - ./Makefile:/opt/hadoop/Makefile
-    ports:
-      - 9870:9870
-    env_file:
-      - ./config
-    environment:
-      ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
-    **command: bash -c "sudo yum install -y make && sudo make install-spark && make install-python3 && make start-namenode"**
-  datanode_1:
-    image: apache/hadoop:3
-    command: [ "hdfs", "datanode" ]
-    env_file:
-      - ./config
-  datanode_2:
-    image: apache/hadoop:3
-    command: [ "hdfs", "datanode" ]
-    env_file:
-      - ./config
-  resourcemanager:
-    image: apache/hadoop:3
-    hostname: resourcemanager
-    command: [ "yarn", "resourcemanager" ]
-    ports:
-      - 8088:8088
-    env_file:
-      - ./config
-    volumes:
-      - ./test.sh:/opt/test.sh
-  nodemanager:
-    image: apache/hadoop:3
-    command: [ "yarn", "nodemanager" ]
-    env_file:
-      - ./config
-  firefox:
-    image: jlesage/firefox
-    hostname: firefox
-    ports:
-      - 5800:5800
-```
-
-Notes:
-
-*   The bolded text highlights the differences.
-
-Makefile
+Installation
 --------
 
 ```
-install-spark:
-  sudo wget https://archive.apache.org/dist/spark/spark-3.5.0/spark-3.5.0-bin-hadoop3.tgz --no-check-certificate
-  mkdir /opt/spark
-  mv spark-3.5.0-bin-hadoop3.tgz /opt/spark/
-  tar -zxvf /opt/spark/spark-3.5.0-bin-hadoop3.tgz -C /opt/spark
-install-python3:
-  sudo yum install -y python3
-  sudo unlink /usr/bin/python
-  sudo ln -s /usr/bin/python3 /usr/bin/python
- 
-start-namenode:
-  hdfs namenode
+sudo wget https://archive.apache.org/dist/spark/spark-3.5.0/spark-3.5.0-bin-hadoop3.tgz --no-check-certificate
+mkdir /opt/spark
+mv spark-3.5.0-bin-hadoop3.tgz /opt/spark/
+tar -zxvf /opt/spark/spark-3.5.0-bin-hadoop3.tgz -C /opt/spark
+
+sudo yum install -y python3
+sudo unlink /usr/bin/python
+sudo ln -s /usr/bin/python3 /usr/bin/python
 ```
 
 Submit Spark Job
