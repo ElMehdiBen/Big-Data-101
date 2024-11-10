@@ -1,6 +1,6 @@
 Big Data 101- A Beginner’s Guide To Big Data
 ============================================
-
+{:.center}
 ![Big Data Tutorial - Edureka](https://miro.medium.com/v2/resize:fit:1386/format:webp/1*tNaBpHFKpWZVb-_GdmBfnQ.png)
 
 Big Data, haven’t you heard this term before? I am sure you have. In the last 4 to 5 years, everyone is talking about **_Big Data_**. But do you really know what exactly is this Big Data and how is it making an impact on our lives? In this Big Data Tutorial, I will give you a complete insight into Big Data.
