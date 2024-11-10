@@ -236,3 +236,11 @@ Hadoop at Last.FM
 *   Hive integration to run optimized SQL queries for analysis
 
 Last.FM started using Hadoop in 2006 because of the growth in users from thousands to millions. With the help of Hadoop, they processed hundreds of daily, monthly, and weekly jobs including website stats and metrics, chart generation (i.e. track statistics), metadata corrections (e.g. misspellings of artists), indexing for search, combining/formatting data for recommendations, data insights, evaluations & reporting. This helped Last.FM to grow tremendously and figure out the taste of their users, based on which they started recommending music.
+
+
+# Repo Elements
+1. [History](https://github.com/ElMehdiBen/Big-Data-101/edit/main/README.md)
+2. [Hadoop](https://github.com/ElMehdiBen/Big-Data-101/blob/main/Hadoop.md)
+3. [HDFS](https://github.com/ElMehdiBen/Big-Data-101/edit/main/HDFS.md)
+4. [MapReduce](https://github.com/ElMehdiBen/Big-Data-101/edit/main/MapReduce.md)
+5. [Hadoop 3](https://github.com/ElMehdiBen/Big-Data-101/edit/main/Hadoop3.md) 
