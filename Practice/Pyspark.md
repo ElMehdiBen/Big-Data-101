@@ -33,7 +33,7 @@ We can start by loading the files in our data set using the spark.read.load comm
 
 ```
 cases = 
-spark.read.load("/home/rahul/projects/sparkdf/coronavirusdataset/Case.
+spark.read.load("/coronavirusdataset/Case.
 csv",format="csv", sep=",", inferSchema="true", header="true")
 ```
 
