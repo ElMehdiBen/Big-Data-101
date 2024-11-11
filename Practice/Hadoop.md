@@ -283,7 +283,9 @@ Use this code snippet to read CSV files from HDFS as Spark Dataframe.
 ```
 sales_data = spark.read.option("header", True).csv("hdfs://namenode:8020/sample_data/sales-data-sample.csv")
 sales_data.show()
-```![captionless image](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*O2jrz3TKGhdFLpzyjV3ndw.png)
+```
+
+![captionless image](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*O2jrz3TKGhdFLpzyjV3ndw.png)
 
 
 ![captionless image](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*H-2t5tiHvMkTPsi9pK1jBQ.png)![captionless image](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*kgTCV3CjE37zbSbiw93Rmg.png)
