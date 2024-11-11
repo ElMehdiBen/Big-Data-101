@@ -47,7 +47,6 @@ cases.show()
 
 ![A Jupyter Notebook](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-5.png)
 
-Image: Screenshot
 
 This file contains the cases grouped by way of infection spread. This arrangement might have helped in the rigorous tracking of coronavirus cases in South Korea.
 
@@ -60,7 +59,6 @@ cases.limit(10).toPandas()
 
 ![A Jupyter Notebook displaying a Pandas data frame](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-6.png)
 
-Image: Screenshot
 
 ### Change Column Names
 
@@ -92,7 +90,6 @@ cases.show()
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-7.png)
 
-Image: Screenshot
 
 ### Sort
 
@@ -105,7 +102,6 @@ cases.sort("confirmed").show()
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-8.png)
 
-Image: Screenshot
 
 But those results are inverted. We want to see the most cases at the top, which we can do using the F.desc function:
 
@@ -118,7 +114,6 @@ cases.sort(F.desc("confirmed")).show()
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-9.png)
 
-Image: Screenshot
 
 We can see that most cases in a logical area in South Korea originated from Shincheonji Church.
 
@@ -145,7 +140,6 @@ cases.filter((cases.confirmed>10) & (cases.province=='Daegu')).show()
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-10.png)
 
-Image: Screenshot
 
 ### GroupBy
 
@@ -160,7 +154,6 @@ cases.groupBy(["province","city"]).agg(F.sum("confirmed")
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-11.png)
 
-Image: Screenshot
 
 If you don’t like the new column names, you can use the alias keyword to rename columns in the agg command itself.
 
@@ -174,7 +167,6 @@ cases.groupBy(["province","city"]).agg(
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-12.png)
 
-Image: Screenshot
 
 ### Joins
 
@@ -190,7 +182,6 @@ regions.limit(10).toPandas()
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-13.png)
 
-Image: Screenshot
 
 We want to get this information in our cases file by joining the two DataFrames. We can do this by using the following process:
 
@@ -202,7 +193,6 @@ cases.limit(10).toPandas()
 
 ![A Jupyter Notebook displaying data ](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-14.png)
 
-Image: Screenshot
 
 More in Data Science[Transformer Neural Networks: A Step-by-Step Breakdown](https://builtin.com/artificial-intelligence/transformer-neural-network)
 
@@ -213,7 +203,6 @@ Sometimes, we might face a scenario in which we need to join a very big table (~
 
 ![Data tables](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-15.png)
 
-Image: Screenshot
 
 Such operations are aplenty in Spark where we might want to apply multiple operations to a particular key. But assuming that the data for each key in the big table is large, it will involve a lot of data movement, sometimes so much that the application itself breaks. A small optimization that we can do when joining such big tables (assuming the other table is small) is to broadcast the small table to each machine/node when performing a join. We can do this easily using the broadcast keyword. This has been a lifesaver many times with Spark when everything else fails.
 
@@ -240,7 +229,6 @@ newDF.show()
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-16.png)
 
-Image: Screenshot
 
 I have shown a minimal example above, but we can use pretty much any complex SQL queries involving groupBy, having and orderBy clauses as well as aliases in the above query.
 
@@ -265,7 +253,6 @@ casesWithNewConfirmed.show()
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-17.png)
 
-Image: Screenshot
 
 We can also use math functions like the F.exp function:
 
@@ -278,7 +265,6 @@ casesWithExpConfirmed.show()
 
 ![A Jupyter Notebook displays data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-18.png)
 
-Image: Screenshot
 
 A lot of other functions are provided in this module, which are enough for most simple use cases. You can check out the functions list [here](https://spark.apache.org/docs/latest/api/python/pyspark.sql.html#module-pyspark.sql.functions).
 
@@ -307,7 +293,6 @@ CasesWithHighLow.show()
 
 ![A Jupyter Notebook displays data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-19.png)
 
-Image: Screenshot
 
 ### Using RDDs
 
@@ -343,7 +328,6 @@ casesNewDf.show()
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-20.png)
 
-Image: Screenshot
 
 ### Using Pandas UDF
 
@@ -360,7 +344,6 @@ cases.printSchema()
 
 ![A Jupyter Notebook displays data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-21.png)
 
-Image: Screenshot
 
 Here, I’m using Pandas UDF to get normalized confirmed cases grouped by infection\_case. The main advantage here is that I get to work with Pandas DataFrames in Spark.
 
@@ -397,7 +380,6 @@ confirmed_groupwise_normalization.limit(10).toPandas()
 
 ![A Pandas data frame](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-22.png)
 
-Image: Screenshot
 
 Get Your Data Career Going[How to Become a Data Analyst From Scratch](https://builtin.com/data-science/data-scientist-from-scratch)
 
@@ -410,7 +392,6 @@ For this, I will also use one more data CSV, which contains dates, as that will 
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-23.png)
 
-Image: Screenshot
 
 ### Ranking
 
@@ -426,7 +407,6 @@ cases.withColumn("rank",F.rank().over(windowSpec)).show()
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-24.png)
 
-Image: Screenshot
 
 ### Lag Variables
 
@@ -445,7 +425,6 @@ timeprovinceWithLag.filter(timeprovinceWithLag.date>'2020-03-
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-25.png)
 
-Image: Screenshot
 
 ### Rolling Aggregations
 
@@ -464,7 +443,6 @@ timeprovinceWithRoll.filter(timeprovinceWithLag.date>'2020-03-
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-26.png)
 
-Image: Screenshot
 
 There are a few things here to understand. First is the **rowsBetween(-6,0)** function that we are using here. This function has a form of rowsBetween(start,end) with both start and end inclusive. Using this, we only look at the past seven days in a particular window including the current\_day. Here, zero specifies the current\_row and -6 specifies the seventh row previous to current\_row. Remember, we count starting from zero.
 
@@ -487,7 +465,6 @@ timeprovinceWithRoll.filter(timeprovinceWithLag.date>'2020-03-
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-27.png)
 
-Image: Screenshot
 
 Pivot DataFrames
 --------------------
@@ -504,7 +481,6 @@ pivotedTimeprovince.limit(10).toPandas()
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-28.png)
 
-Image: Screenshot
 
 One thing to note here is that we always need to provide an aggregation with the pivot function, even if the data has a single row for a date.
 
@@ -564,7 +540,6 @@ pivotedTimeprovince.select('date',F.expr(exprs))
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-29.png)
 
-Image: Screenshot
 
 And voila! We’ve got our DataFrame in a vertical format. Quite a few column creations, filters, and join operations are necessary to get exactly the same format as before, but I will not get into those here.
 
@@ -591,7 +566,6 @@ This is how the table looks after the operation:
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-30.png)
 
-Image: Screenshot
 
 ### Step Two: First Groupby on Salt Key
 
@@ -604,13 +578,11 @@ how()
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-31.png)
 
-Image: Screenshot
 
 ### Second Group On the Original Key
 
 ![A Jupyter Notebook displaying data](https://builtin.com/sites/www.builtin.com/files/styles/ckeditor_optimize/public/inline-images/pyspark-dataframe-32.png)
 
-Image: Screenshot
 
 Here, we see how the sum of sum can be used to get the final sum. You can also make use of facts like these:
 
