@@ -14,4 +14,15 @@ df.show()
 **Exemple 2**
 
 ```
+mkdir /opt/sample_data
+cd /opt/sample_data
+wget https://raw.githubusercontent.com/metatron-app/metatron-doc-discovery/master/_static/data/sales-data-sample.csv
+
+Use these commands to create a directory and copy data to the HDFS.
+
+hdfs dfs -mkdir /sample_data
+hdfs dfs -put /opt/sample_data/sales-data-sample.csv /sample_data/
+
+sales_data = spark.read.option("header", True).csv("hdfs://namenode:8020/sample_data/sales-data-sample.csv")
+sales_data.show()
 ```
