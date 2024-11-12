@@ -194,4 +194,3 @@ Window functions allow for calculations across specific "windows" or subsets of 
 ---
 
 This guide provides a foundation for working with Spark DataFrames in PySpark. Practice each function to become familiar with its syntax and capabilities!
-```
