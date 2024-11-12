@@ -5,19 +5,21 @@ Databricks : https://community.cloud.databricks.com
 URL du CSV : https://we.tl/t-r0HmCi0BBQ
 
 Informations sur le fichier de données :
+=======================================
 
 Il s'agit d'un ensemble de données transnational qui contient toutes les transactions effectuées entre le 01/12/2010 et le 09/12/2011 pour un commerce de détail en ligne non implanté physiquement, basé et enregistré au Royaume-Uni. L'entreprise vend principalement des cadeaux uniques pour toutes occasions. De nombreux clients de l'entreprise sont des grossistes.
 
 Informations sur les attributs :
+===============================
 
-    InvoiceNo : Numéro de facture. Nominal, un nombre entier de 6 chiffres attribué de manière unique à chaque transaction. Si ce code commence par la lettre 'C', cela indique une annulation.
-    StockCode : Code produit (article). Nominal, un nombre entier de 5 chiffres attribué de manière unique à chaque produit distinct.
-    Description : Nom du produit (article). Nominal.
-    Quantity : Quantité de chaque produit (article) par transaction. Numérique.
-    InvoiceDate : Date et heure de la facture. Numérique, le jour et l'heure auxquels chaque transaction a été générée.
-    UnitPrice : Prix unitaire. Numérique, prix du produit par unité en livres sterling.
-    CustomerID : Numéro de client. Nominal, un nombre entier de 5 chiffres attribué de manière unique à chaque client.
-    Country : Nom du pays. Nominal, le nom du pays où réside chaque client.
+InvoiceNo : Numéro de facture. Nominal, un nombre entier de 6 chiffres attribué de manière unique à chaque transaction. Si ce code commence par la lettre 'C', cela indique une annulation.
+StockCode : Code produit (article). Nominal, un nombre entier de 5 chiffres attribué de manière unique à chaque produit distinct.
+Description : Nom du produit (article). Nominal.
+Quantity : Quantité de chaque produit (article) par transaction. Numérique.
+InvoiceDate : Date et heure de la facture. Numérique, le jour et l'heure auxquels chaque transaction a été générée.
+UnitPrice : Prix unitaire. Numérique, prix du produit par unité en livres sterling.
+CustomerID : Numéro de client. Nominal, un nombre entier de 5 chiffres attribué de manière unique à chaque client.
+Country : Nom du pays. Nominal, le nom du pays où réside chaque client.
 
 1. **Filtrer et compter les annulations**
    - **Tâche** : Trouver le nombre total de transactions annulées (celles dont le champ `InvoiceNo` commence par 'C').
