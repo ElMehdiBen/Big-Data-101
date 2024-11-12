@@ -26,7 +26,7 @@ Questions :
 ===============================
 
 1. **Filtrer et compter les annulations**
-   - **Tâche** : Trouver le nombre total de transactions annulées (celles dont le champ `InvoiceNo` commence par 'C').
+   - **Tâche** : Trouver le nombre total de transactions annulées.
 
 2. **Top 5 des produits les plus populaires**
    - **Tâche** : Identifier les 5 produits les plus fréquemment commandés en fonction de la `Quantity`.
