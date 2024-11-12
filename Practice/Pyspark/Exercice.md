@@ -1,7 +1,8 @@
 **Retail Example**
 
 Databricks : https://community.cloud.databricks.com
-URL : https://we.tl/t-r0HmCi0BBQ
+
+URL du CSV : https://we.tl/t-r0HmCi0BBQ
 
 Informations sur le fichier de données :
 
