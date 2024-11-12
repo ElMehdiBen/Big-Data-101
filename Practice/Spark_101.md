@@ -1,4 +1,3 @@
-```markdown
 # Essential Spark DataFrame Functions
 
 This document covers some of the most important Spark DataFrame functions to know when working with data in PySpark.
