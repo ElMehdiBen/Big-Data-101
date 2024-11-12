@@ -10,8 +10,6 @@ This document covers some of the most important Spark DataFrame functions to kno
 - **`spark.createDataFrame(data, schema=None)`**: Creates a DataFrame from a list of tuples, RDD, or Pandas DataFrame.
   
   ```python
-  from pyspark.sql import SparkSession
-  spark = SparkSession.builder.appName("SparkBasics").getOrCreate()
   data = [(1, "Alice"), (2, "Bob")]
   df = spark.createDataFrame(data, ["id", "name"])
   ```
