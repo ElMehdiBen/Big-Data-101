@@ -1,4 +1,5 @@
-**Retail Example**
+Retail Example
+==============
 
 Databricks : https://community.cloud.databricks.com
 
@@ -20,6 +21,9 @@ InvoiceDate : Date et heure de la facture. Numérique, le jour et l'heure auxque
 UnitPrice : Prix unitaire. Numérique, prix du produit par unité en livres sterling.
 CustomerID : Numéro de client. Nominal, un nombre entier de 5 chiffres attribué de manière unique à chaque client.
 Country : Nom du pays. Nominal, le nom du pays où réside chaque client.
+
+Questions :
+===============================
 
 1. **Filtrer et compter les annulations**
    - **Tâche** : Trouver le nombre total de transactions annulées (celles dont le champ `InvoiceNo` commence par 'C').
