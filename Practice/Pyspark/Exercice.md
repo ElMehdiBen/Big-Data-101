@@ -49,10 +49,7 @@ Questions :
 8. **Distribution de la taille des factures**
    - **Tâche** : Calculer la taille moyenne de chaque facture en termes de `Quantity` et de `Revenue`.
 
-9. **Temps entre les commandes d'un client**
-   - **Tâche** : Calculer le temps moyen entre les commandes pour chaque client.
-
-10. **Identifier les paires de produits les plus fréquentes**
+9. **Identifier les paires de produits les plus fréquentes**
    - **Tâche** : Trouver les paires de produits les plus fréquemment achetées ensemble dans une même facture.
 
 Ces exercices couvrent différents aspects de l'analyse de données en PySpark pour explorer et comprendre les ventes et le comportement des clients dans cet ensemble de données.
