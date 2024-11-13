@@ -19,12 +19,19 @@ Informations sur les attributs :
 ===============================
 
 InvoiceNo : Numéro de facture. Nominal, un nombre entier de 6 chiffres attribué de manière unique à chaque transaction. Si ce code commence par la lettre 'C', cela indique une annulation.
+
 StockCode : Code produit (article). Nominal, un nombre entier de 5 chiffres attribué de manière unique à chaque produit distinct.
+
 Description : Nom du produit (article). Nominal.
+
 Quantity : Quantité de chaque produit (article) par transaction. Numérique.
+
 InvoiceDate : Date et heure de la facture. Numérique, le jour et l'heure auxquels chaque transaction a été générée.
+
 UnitPrice : Prix unitaire. Numérique, prix du produit par unité en livres sterling.
+
 CustomerID : Numéro de client. Nominal, un nombre entier de 5 chiffres attribué de manière unique à chaque client.
+
 Country : Nom du pays. Nominal, le nom du pays où réside chaque client.
 
 Questions :
