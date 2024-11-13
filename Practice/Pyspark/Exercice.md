@@ -5,6 +5,11 @@ Databricks : https://community.cloud.databricks.com
 
 URL du CSV : https://we.tl/t-r0HmCi0BBQ
 
+References : 
+- https://github.com/kevinschaich/pyspark-cheatsheet
+- https://images.datacamp.com/image/upload/v1676302905/Marketing/Blog/PySpark_SQL_Cheat_Sheet.pdf
+
+
 Informations sur le fichier de données :
 =======================================
 
