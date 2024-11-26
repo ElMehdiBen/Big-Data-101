@@ -2,7 +2,38 @@ Here are step-by-step tutorials for creating three practical and engaging Apache
 
 ---
 
-## **Workflow 1: Real-Time Log Processing and Filtering**
+## **Workflow 1: Real-Time Data Movement**
+
+### Objective:
+Create a NiFi flow to process log files, filter error messages, and save them to a separate file.
+
+### Key Concepts Learned:
+- File ingestion
+- FlowFile manipulation
+- Output routing
+
+### Steps:
+1. **Ingest Files**
+   - Use **GetFile**:
+     - Configure it to read log files from a directory (e.g., `/data/files`).
+     - Set `Keep Source File` to `false` to move files after processing.
+
+2. **Store Files**
+   - Add a **PutFile** processor:
+     - Configure it to store filtered logs in `/data/moved_files`.
+
+3. **Add LogMessage**
+   - Add a **LogMessage** processor:
+     - Configure it to log everything.
+
+4. **Test the Workflow**
+   - Drop a log file into the source folder and verify that:
+     - Errors are filtered and saved.
+     - Non-error lines are saved separately.
+
+---
+
+## **Workflow 2: Real-Time Log Processing and Filtering**
 
 ### Objective:
 Create a NiFi flow to process log files, filter error messages, and save them to a separate file.
@@ -43,7 +74,7 @@ Create a NiFi flow to process log files, filter error messages, and save them to
 
 ---
 
-## **Workflow 2: Fetch Data from an API and Store in a Database**
+## **Workflow 3: Fetch Data from an API and Store in a Database**
 
 ### Objective:
 Pull data from a REST API, convert it to a tabular format, and save it to a database.
@@ -85,7 +116,7 @@ Pull data from a REST API, convert it to a tabular format, and save it to a data
 
 ---
 
-## **Workflow 3: Real-Time Twitter Data Sentiment Analysis**
+## **Workflow 4: Real-Time Twitter Data Sentiment Analysis**
 
 ### Objective:
 Stream tweets from Twitter, analyze their sentiment, and store results in a NoSQL database (e.g., MongoDB).
@@ -128,5 +159,3 @@ Stream tweets from Twitter, analyze their sentiment, and store results in a NoSQ
 ### Additional Resources:
 - **Documentation**: Use the [NiFi Processor Documentation](https://nifi.apache.org/docs.html) for details on each processor.
 - **Bulletins**: Monitor NiFi bulletins and provenance data to debug and understand the flow.
-
-Would you like a more detailed walkthrough of any specific workflow?
