@@ -57,3 +57,11 @@ Use Cases
 *   IOT device data ingestion.
 *   Real time/batch data analytics/machine learning.
 *   Visual programming.
+
+
+Installation
+============
+
+```
+docker run --name nifi -p 8443:8443 -v ./data:/data -d apache/nifi:latest
+```
