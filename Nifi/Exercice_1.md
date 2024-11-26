@@ -1,4 +1,4 @@
-Here are step-by-step tutorials for creating three practical and engaging Apache NiFi workflows. Each is designed to help you learn valuable concepts while building something useful:
+Step-by-step tutorials for creating three practical and engaging Apache NiFi workflows. Each is designed to help you learn valuable concepts while building something useful:
 
 ---
 
