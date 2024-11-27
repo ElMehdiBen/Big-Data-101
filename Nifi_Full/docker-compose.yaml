@@ -1,0 +1,34 @@
+version: '3'
+services:
+  nifi:
+    image: apache/nifi:latest
+    ports:
+      - "8443:8443"
+    volumes:
+      - ./nifi_data:/opt/nifi/nifi-current/nar_extensions
+      - ./data:/data
+  namenode:
+    image: apache/hadoop:3
+    hostname: namenode
+    volumes:
+      - ./namenode:/opt/hadoop/namenode
+    ports:
+      - 9870:9870
+      - 8080:8080
+      - 8020:8020
+      - 9000:9000
+    env_file:
+      - ./config
+    environment:
+      ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
+    command: ["hdfs", "namenode" ]
+  datanode_1:
+    image: apache/hadoop:3
+    command: [ "hdfs", "datanode" ]
+    env_file:
+      - ./config
+  datanode_2:
+    image: apache/hadoop:3
+    command: [ "hdfs", "datanode" ]
+    env_file:
+      - ./config
