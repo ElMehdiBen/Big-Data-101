@@ -1,5 +1,5 @@
 # Exercise 1: Basic ETL Pipeline
-"""
+
 THE ASK:
 Create an Airflow DAG that performs the following tasks:
 1. Reads a daily temperature data CSV file containing Fahrenheit readings
@@ -13,10 +13,10 @@ STEP BY STEP TUTORIAL:
 3. Define the DAG
 4. Create the transformation task
 5. Set up the dependencies (single task in this case)
-"""
+
 
 # Exercise 2: Data Validation Pipeline
-"""
+
 THE ASK:
 Create a DAG that validates incoming employee data with the following requirements:
 1. Check if age and salary values are positive numbers
@@ -31,10 +31,10 @@ STEP BY STEP TUTORIAL:
 3. Define the DAG with branching logic
 4. Create all necessary tasks
 5. Set up the correct task dependencies
-"""
+
 
 # Exercise 3: Multi-Source Data Integration
-"""
+
 THE ASK:
 Create a DAG that:
 1. Fetches data from both an API and a PostgreSQL database
@@ -50,10 +50,10 @@ STEP BY STEP TUTORIAL:
 4. Create database fetch task
 5. Create data combination task
 6. Set up parallel execution of fetch tasks
-"""
+
 
 # Exercise 4: Dynamic Task Generation
-"""
+
 THE ASK:
 Create a DAG that:
 1. Processes multiple product categories in parallel
@@ -69,7 +69,7 @@ STEP BY STEP TUTORIAL:
 4. Create start and end tasks
 5. Dynamically generate category tasks
 6. Set up dependencies
-"""
+
 
 # Step 1: Create processing function
 def process_category(category, **context):
