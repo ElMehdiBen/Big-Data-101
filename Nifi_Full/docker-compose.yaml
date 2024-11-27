@@ -5,7 +5,8 @@ services:
     ports:
       - "8443:8443"
     volumes:
-      - ./nifi_data:/opt/nifi/nifi-current/nar_extensions
+      - ./extensions:/opt/nifi/nifi-current/nar_extensions
+      - ./config:/config
       - ./data:/data
   namenode:
     image: apache/hadoop:3
@@ -18,7 +19,7 @@ services:
       - 8020:8020
       - 9000:9000
     env_file:
-      - ./config
+      - ./config/config
     environment:
       ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
     command: ["hdfs", "namenode" ]
@@ -26,9 +27,24 @@ services:
     image: apache/hadoop:3
     command: [ "hdfs", "datanode" ]
     env_file:
-      - ./config
+      - ./config/config
   datanode_2:
     image: apache/hadoop:3
     command: [ "hdfs", "datanode" ]
     env_file:
-      - ./config
+      - ./config/config
+  resourcemanager:
+    image: apache/hadoop:3
+    hostname: resourcemanager
+    command: [ "yarn", "resourcemanager" ]
+    ports:
+      - 8088:8088
+    env_file:
+      - ./config/config
+    volumes:
+      - ./manager_data:/opt/rm
+  nodemanager:
+    image: apache/hadoop:3
+    command: [ "yarn", "nodemanager" ]
+    env_file:
+      - ./config/config
