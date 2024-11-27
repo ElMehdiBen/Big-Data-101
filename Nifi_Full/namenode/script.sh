@@ -5,10 +5,10 @@ sudo sed -i -e '/^#baseurl=http:\/\/mirror.centos.org/p;s|#baseurl=http://mirror
 sudo yum update -y
 sudo yum install unzip -y
 
-sudo wget https://archive.apache.org/dist/spark/spark-2.4.8/spark-2.4.8-bin-hadoop2.7.tgz --no-check-certificate
+sudo wget https://archive.apache.org/dist/spark/spark-2.2.0/spark-2.2.0-bin-without-hadoop.tgz --no-check-certificate
 mkdir /opt/spark
-mv spark-2.4.8-bin-hadoop2.7 /opt/spark/
-tar -zxvf /opt/spark/spark-2.4.8-bin-hadoop2.7 -C /opt/spark
+mv spark-2.2.0-bin-without-hadoop /opt/spark/
+tar -zxvf /opt/spark/spark-2.2.0-bin-without-hadoop -C /opt/spark
 
 sudo yum install -y python3
 sudo unlink /usr/bin/python
