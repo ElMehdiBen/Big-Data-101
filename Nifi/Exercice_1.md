@@ -33,7 +33,42 @@ Create a NiFi flow to process log files, filter error messages, and save them to
 
 ---
 
-## **Workflow 2: Real-Time Log Processing and Filtering**
+## **Workflow 2: Real-Time Data Movement + Matching **
+
+### Objective:
+Create a NiFi flow to process log files, filter error messages, and save them to a separate file.
+
+### Key Concepts Learned:
+- File ingestion
+- FlowFile manipulation
+- Output routing
+
+### Steps:
+1. **Ingest Files**
+   - Use **GetFile**:
+     - Configure it to read log files from a directory (e.g., `/data/files`).
+     - Set `Keep Source File` to `false` to move files after processing.
+    
+2. **Match File Names**
+   - Add a **RouteOnAttribute** processor:
+     - Configure it to filter by matching the name.
+
+3. **Store Files**
+   - Add a **PutFile** processor:
+     - Configure it to store filtered logs in `/data/moved_files`.
+
+4. **Add LogMessage**
+   - Add a **LogMessage** processor:
+     - Configure it to log everything.
+
+5. **Test the Workflow**
+   - Drop a log file into the source folder and verify that:
+     - Errors are filtered and saved.
+     - Non-error lines are saved separately.
+    
+---
+
+## **Workflow 3: Real-Time Log Processing and Filtering**
 
 ### Objective:
 Create a NiFi flow to process log files, filter error messages, and save them to a separate file.
