@@ -5,7 +5,7 @@ Create an InvokeHTTP Processor
 
 Use this URL : https://dummyjson.com/products
 
-Save the result to a JSON file with a specific name
+Save the result to a JSON file with a specific name using UpdateAttribute
 
 
 HDFS
