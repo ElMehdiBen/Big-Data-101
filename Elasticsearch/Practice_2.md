@@ -9,7 +9,7 @@ Let’s dive into a practical, hands-on guide focused specifically on **Searchin
 - **Sample Data**: We’ll use the `products` index from the previous guide. If you don’t have it, set it up with the following commands to create the index and add some sample data.
 
 **Create the Index with Mapping**:
-```json
+```bash
 PUT /products
 {
   "settings": {
@@ -29,7 +29,7 @@ PUT /products
 ```
 
 **Index Sample Documents**:
-```json
+```bash
 PUT /products/_doc/1
 {
   "name": "Laptop",
@@ -74,7 +74,7 @@ PUT /products/_doc/4
 #### 1.1 The `_search` Endpoint
 - **Why**: The `_search` endpoint is the primary way to query data in Elasticsearch.
 - **Command** (Basic Search for All Documents):
-  ```json
+  ```bash
   GET /products/_search
   {
     "query": {
@@ -108,7 +108,7 @@ PUT /products/_doc/4
 #### 2.1 Match Query (Full-Text Search)
 - **Why**: Search for documents containing a specific term in a text field (e.g., `name` or `description`).
 - **Command**:
-  ```json
+  ```bash
   GET /products/_search
   {
     "query": {
@@ -144,7 +144,7 @@ PUT /products/_doc/4
 #### 2.2 Multi-Match Query (Search Across Multiple Fields)
 - **Why**: Search for a term across multiple fields (e.g., `name` and `description`).
 - **Command**:
-  ```json
+  ```bash
   GET /products/_search
   {
     "query": {
@@ -180,7 +180,7 @@ PUT /products/_doc/4
 #### 3.1 Term Query (Exact Match for Keyword Fields)
 - **Why**: Use for exact matches on `keyword` fields like `category`.
 - **Command**:
-  ```json
+  ```bash
   GET /products/_search
   {
     "query": {
@@ -210,7 +210,7 @@ PUT /products/_doc/4
 #### 3.2 Terms Query (Match Multiple Values)
 - **Why**: Find documents matching any of a list of values.
 - **Command**:
-  ```json
+  ```bash
   GET /products/_search
   {
     "query": {
@@ -230,7 +230,7 @@ PUT /products/_doc/4
 #### 4.1 Bool Query (Must, Should, Must Not)
 - **Why**: Combine multiple conditions for more complex searches.
 - **Command** (Find in-stock electronics under $500):
-  ```json
+  ```bash
   GET /products/_search
   {
     "query": {
@@ -276,7 +276,7 @@ PUT /products/_doc/4
 #### 5.1 Filter Context (Efficient Filtering)
 - **Why**: Filters are faster than queries because they don’t calculate relevance scores.
 - **Command** (Filter for in-stock products):
-  ```json
+  ```bash
   GET /products/_search
   {
     "query": {
@@ -301,7 +301,7 @@ PUT /products/_doc/4
 #### 6.1 Sort Results
 - **Why**: Order results by a field (e.g., `price`).
 - **Command** (Sort by price, ascending):
-  ```json
+  ```bash
   GET /products/_search
   {
     "query": { "match_all": {} },
@@ -316,7 +316,7 @@ PUT /products/_doc/4
 #### 6.2 Paginate Results
 - **Why**: Limit the number of results and fetch them in chunks.
 - **Command** (Get 2 results, starting from the 2nd result):
-  ```json
+  ```bash
   GET /products/_search
   {
     "query": { "match_all": {} },
@@ -336,7 +336,7 @@ PUT /products/_doc/4
 #### 7.1 Highlight Matching Terms
 - **Why**: Show which parts of the document matched the query.
 - **Command**:
-  ```json
+  ```bash
   GET /products/_search
   {
     "query": {
@@ -377,7 +377,7 @@ PUT /products/_doc/4
 #### 8.1 Combine Search with Aggregations
 - **Why**: Search for documents and analyze the results (e.g., count by category).
 - **Command** (Find in-stock products and group by category):
-  ```json
+  ```bash
   GET /products/_search
   {
     "query": {
@@ -416,7 +416,7 @@ PUT /products/_doc/4
 ### 9. Tips for Effective Searching
 
 - **Use `explain` to Debug**:
-  ```json
+  ```bash
   GET /products/_search
   {
     "explain": true,
