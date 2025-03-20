@@ -88,10 +88,10 @@ PUT /products/_doc/4
     "hits": {
       "total": { "value": 4, "relation": "eq" },
       "hits": [
-        { "_id": "1", "_source": { "name": "Laptop",  } },
-        { "_id": "2", "_source": { "name": "Mouse",  } },
-        { "_id": "3", "_source": { "name": "Desk Chair",  } },
-        { "_id": "4", "_source": { "name": "Monitor",  } }
+        { "_id": "1", "_source": { "name": "Laptop" } },
+        { "_id": "2", "_source": { "name": "Mouse" } },
+        { "_id": "3", "_source": { "name": "Desk Chair" } },
+        { "_id": "4", "_source": { "name": "Monitor" } }
       ]
     }
   }
@@ -122,7 +122,7 @@ PUT /products/_doc/4
   ```json
   {
     "hits": {
-      "total": { "value": 1,  },
+      "total": { "value": 1 },
       "hits": [
         {
           "_id": "1",
@@ -159,7 +159,7 @@ PUT /products/_doc/4
   ```json
   {
     "hits": {
-      "total": { "value": 1,  },
+      "total": { "value": 1 },
       "hits": [
         {
           "_id": "2",
@@ -194,11 +194,11 @@ PUT /products/_doc/4
   ```json
   {
     "hits": {
-      "total": { "value": 3,  },
+      "total": { "value": 3 },
       "hits": [
-        { "_id": "1", "_source": { "name": "Laptop",  } },
-        { "_id": "2", "_source": { "name": "Mouse",  } },
-        { "_id": "4", "_source": { "name": "Monitor",  } }
+        { "_id": "1", "_source": { "name": "Laptop" } },
+        { "_id": "2", "_source": { "name": "Mouse" } },
+        { "_id": "4", "_source": { "name": "Monitor" } }
       ]
     }
   }
@@ -248,7 +248,7 @@ PUT /products/_doc/4
   ```json
   {
     "hits": {
-      "total": { "value": 1,  },
+      "total": { "value": 1 },
       "hits": [
         {
           "_id": "4",
@@ -358,7 +358,7 @@ PUT /products/_doc/4
       "hits": [
         {
           "_id": "2",
-          "_source": { "name": "Mouse",  },
+          "_source": { "name": "Mouse" },
           "highlight": {
             "description": ["A wireless mouse with <em>ergonomic</em> design."]
           }
