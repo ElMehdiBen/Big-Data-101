@@ -24,8 +24,7 @@ Let’s dive into a practical, hands-on guide for learning Elasticsearch concept
   {
     "status": "green",
     "number_of_nodes": 1,
-    "number_of_data_nodes": 1,
-    ...
+    "number_of_data_nodes": 1
   }
   ```
 - **Explanation**:
@@ -106,7 +105,7 @@ Let’s dive into a practical, hands-on guide for learning Elasticsearch concept
 #### 3.2 Create an Index with a Mapping
 - **Scenario**: Let’s create an index for storing product data with fields for `name` (text), `price` (float), and `in_stock` (boolean).
 - **Command**:
-  ```json
+  ```bash
   PUT /products
   {
     "settings": {
@@ -170,7 +169,7 @@ Let’s dive into a practical, hands-on guide for learning Elasticsearch concept
 #### 4.1 Add a Document to the Index
 - **Why**: Populate your index with data.
 - **Command**:
-  ```json
+  ```bash
   PUT /products/_doc/1
   {
     "name": "Laptop",
@@ -194,7 +193,7 @@ Let’s dive into a practical, hands-on guide for learning Elasticsearch concept
 
 #### 4.2 Add Another Document
 - **Command**:
-  ```json
+  ```bash
   PUT /products/_doc/2
   {
     "name": "Mouse",
@@ -210,7 +209,7 @@ Let’s dive into a practical, hands-on guide for learning Elasticsearch concept
 #### 5.1 Basic Search (Match Query)
 - **Why**: Retrieve documents based on a search term.
 - **Command**:
-  ```json
+  ```bash
   GET /products/_search
   {
     "query": {
@@ -242,7 +241,7 @@ Let’s dive into a practical, hands-on guide for learning Elasticsearch concept
 #### 5.2 Filter by a Field (Term Query)
 - **Why**: Exact matches for specific values (e.g., boolean or keyword fields).
 - **Command**:
-  ```json
+  ```bash
   GET /products/_search
   {
     "query": {
@@ -262,7 +261,7 @@ Let’s dive into a practical, hands-on guide for learning Elasticsearch concept
 #### 6.1 Add a New Field to the Mapping
 - **Why**: You might need to add new fields as your data evolves.
 - **Command**:
-  ```json
+  ```bash
   PUT /products/_mapping
   {
     "properties": {
@@ -278,7 +277,7 @@ Let’s dive into a practical, hands-on guide for learning Elasticsearch concept
 
 #### 6.2 Update a Document with the New Field
 - **Command**:
-  ```json
+  ```bash
   POST /products/_update/1
   {
     "doc": {
@@ -294,7 +293,7 @@ Let’s dive into a practical, hands-on guide for learning Elasticsearch concept
 #### 7.1 Count Documents by Category
 - **Why**: Aggregations let you analyze data (e.g., group by a field).
 - **Command**:
-  ```json
+  ```bash
   GET /products/_search
   {
     "aggs": {
