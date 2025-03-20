@@ -75,8 +75,6 @@ Let’s dive into a practical, hands-on guide for learning Elasticsearch concept
 - **Command** (same as your screenshot):
   ```bash
   PUT /my-index
-  ```
-  ```json
   {
     "settings": {
       "number_of_shards": 3,
