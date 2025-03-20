@@ -73,8 +73,10 @@ Let’s dive into a practical, hands-on guide for learning Elasticsearch concept
 #### 2.2 Create an Index with Custom Settings (Like the Screenshot)
 - **Why**: Control the number of shards and replicas for scalability and redundancy.
 - **Command** (same as your screenshot):
-  ```json
+  ```bash
   PUT /my-index
+  ```
+  ```json
   {
     "settings": {
       "number_of_shards": 3,
