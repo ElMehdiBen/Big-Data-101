@@ -22,6 +22,11 @@ services:
       - "9200:9200"
     volumes:
       - es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
     networks:
       - elastic-network
 
@@ -31,7 +36,10 @@ services:
     volumes:
       - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
+    command: >
+      bash -c "sleep 30 && /usr/share/logstash/bin/logstash -f /usr/share/logstash/pipeline/logstash.conf"
     networks:
       - elastic-network
 
@@ -43,7 +51,8 @@ services:
     ports:
       - "5601:5601"
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
     networks:
       - elastic-network
 
