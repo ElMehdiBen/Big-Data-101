@@ -183,8 +183,7 @@ Let’s dive into a practical, hands-on guide for learning Elasticsearch concept
     "_index": "products",
     "_id": "1",
     "_version": 1,
-    "result": "created",
-    ...
+    "result": "created"
   }
   ```
 - **Explanation**:
@@ -223,7 +222,7 @@ Let’s dive into a practical, hands-on guide for learning Elasticsearch concept
   ```json
   {
     "hits": {
-      "total": { "value": 1, ... },
+      "total": { "value": 1 },
       "hits": [
         {
           "_id": "1",
