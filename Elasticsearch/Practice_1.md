@@ -5,8 +5,8 @@ Let’s dive into a practical, hands-on guide for learning Elasticsearch concept
 ### Practical Guide to Learning Elasticsearch Concepts
 
 #### Prerequisites
-- **Elasticsearch Installed**: Ensure Elasticsearch is running on your machine (default port: 9200). You can download it from elastic.co and start it with `bin/elasticsearch` (Linux/Mac) or `bin\elasticsearch.bat` (Windows).
-- **Tool to Send Requests**: Use `curl`, Postman, or Kibana Dev Tools (recommended for beginners).
+- **Elasticsearch Installed**: Ensure Elasticsearch is running on your machine (default port: 9200).
+- **Tool to Send Requests**: Use `curl` or Postman (recommended for beginners).
 - **Test It**: Verify Elasticsearch is running by sending a GET request to `http://localhost:9200`. You should see a JSON response with the cluster name and version.
 
 ---
