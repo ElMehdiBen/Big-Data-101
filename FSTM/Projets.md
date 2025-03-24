@@ -1,5 +1,13 @@
 Chaque projet inclut à la fois les **détails fonctionnels** (le besoin et les attentes) et les **détails des outils** (comment les technologies comme Elasticsearch, Airflow, Kafka, FastAPI, Python Celery, et Debezium peuvent être utilisées). 
-Cela offre un cadre clair aux étudiants tout en leur laissant la liberté d’explorer les implémentations.
+Cela offre un cadre clair aux étudiants tout en leur laissant la liberté d’explorer les implémentations. Il n'est pas nécessaire d'utiliser tous les outils proposés, avec un minimum de 3 outils. 
+
+### Conseils pour les étudiants :
+- Identifiez les flux de données et les points de traitement pour chaque projet.
+- Testez avec des données simulées (ex. logs, capteurs, prix) avant d’explorer des données réelles.
+- Utilisez Docker pour déployer les outils (ex. Kafka, Elasticsearch) et simplifier les tests.
+- Réfléchissez à la scalabilité et aux scénarios d’échec (ex. surcharge de logs ou panne d’un composant).
+
+Très bonne chance a tous
 
 ---
 
@@ -83,13 +91,3 @@ Cela offre un cadre clair aux étudiants tout en leur laissant la liberté d’e
   - **Elasticsearch** : Indexer les logs pour recherche et visualisation (ex. via Kibana).
   - **Airflow** : Planifier des tâches de maintenance ou d’analyse (ex. rapports quotidiens).
 - **Contexte** : Simuler plusieurs services (ex. scripts ou endpoints) générant des logs.
-
----
-
-### Conseils pour les étudiants :
-- Identifiez les flux de données et les points de traitement pour chaque projet.
-- Testez avec des données simulées (ex. logs, capteurs, prix) avant d’explorer des données réelles.
-- Utilisez Docker pour déployer les outils (ex. Kafka, Elasticsearch) et simplifier les tests.
-- Réfléchissez à la scalabilité et aux scénarios d’échec (ex. surcharge de logs ou panne d’un composant).
-
-Très bonne chance a tous
