@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.12.0
+    container_name: logstash
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - XPACK_MONITORING_ENABLED=false
+    ports:
+      - "5044:5044"
+    networks:
+      - elastic-network
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.12.0
+    container_name: filebeat
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./sample.log:/usr/share/filebeat/sample.log
+    depends_on:
+      - logstash
+    networks:
+      - elastic-network
+
+volumes:
+  logstash-data:
+    driver: local
+
+networks:
+  elastic-network:
+    external: true
+    name: elasticsearchcourse_elastic-network
