@@ -1,8 +1,9 @@
 # Elasticsearch Training Exercise
 
 In this exercise, you will:
-1. Use a script to read transaction data from a URL and index it into Elasticsearch.
-2. Answer a set of query and aggregation questions to analyze the data.
+1. (Dev Team) Write a script to read transaction data from a URL and index it into Elasticsearch.
+2. (Functional Team) Connect to this ES Instance "http://75.119.145.26:9200".
+3. Answer a set of query and aggregation questions to analyze the data.
 
 ## Part 1: Indexing Data into Elasticsearch
 
