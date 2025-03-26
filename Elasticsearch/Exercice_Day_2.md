@@ -24,8 +24,7 @@ The data is a list of transactions in JSON format. Here's an excerpt (full data 
     "payment_method": "PayPal",
     "shipping_address": "2282 Meadow Vale Trail",
     "status": "pending"
-  },
-  ...
+  }
 ]
 ```
 
@@ -55,10 +54,8 @@ Now that the data is indexed, use Elasticsearch queries to answer the following 
 - Test your queries against the indexed data to ensure correctness.
 - Submit your answers in a separate Markdown file or as part of this document.
 
----
-
-Happy querying!
-```
-
 ### Notes for You
 - The questions are designed to cover basic queries (match, range, term) and aggregations (terms, sum, avg), which are suitable for Elasticsearch beginners.
+
+
+Happy querying!
