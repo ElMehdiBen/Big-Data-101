@@ -8,6 +8,8 @@ In this exercise, you will:
 
 Create a small script that reads JSON data from the given URL and sends it to an Elasticsearch instance.
 
+Link : https://my.api.mockaroo.com/transactions?key=fb215aa0
+
 ### Sample Data
 The data is a list of transactions in JSON format. Here's an excerpt (full data provided separately):
 
