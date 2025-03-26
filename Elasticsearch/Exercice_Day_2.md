@@ -5,6 +5,30 @@ In this exercise, you will:
 2. (Functional Team) Connect to this ES Instance "http://75.119.145.26:9200".
 3. Answer a set of query and aggregation questions to analyze the data.
 
+Example Python Script
+```python
+import requests
+from elasticsearch import Elasticsearch
+import json
+
+# Elasticsearch connection
+es = Elasticsearch("http://75.119.145.26:9200")
+
+# URL containing the transaction data
+data_url = "https://my.api.mockaroo.com/transactions?key=fb215aa0"
+
+# Fetch the data
+response = requests.get(data_url)
+transactions = response.json()
+
+# Index the data into Elasticsearch
+index_name = "transactions"
+for transaction in transactions:
+    es.index(index=index_name, id=transaction["transaction_id"], body=transaction)
+
+print(f"Indexed {len(transactions)} transactions into Elasticsearch.")
+```
+
 ## Part 1: Indexing Data into Elasticsearch
 
 Create a small script that reads JSON data from the given URL and sends it to an Elasticsearch instance.
