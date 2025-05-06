@@ -10,6 +10,7 @@ Example Python Script
 import requests
 from elasticsearch import Elasticsearch
 import json
+from datetime import datetime
 
 # Elasticsearch connection
 es = Elasticsearch("http://75.119.145.26:9200")
@@ -17,13 +18,49 @@ es = Elasticsearch("http://75.119.145.26:9200")
 # URL containing the transaction data
 data_url = "https://my.api.mockaroo.com/transactions?key=fb215aa0"
 
+# Define the index mapping with transaction_date as a date type
+index_name = "transactions_mapped"
+mapping = {
+    "mappings": {
+        "properties": {
+            "transaction_date": {
+                "type": "date",
+                "format": "M/d/yyyy"  # Expecting dates in this format after conversion
+            },
+            "transaction_id": {"type": "integer"},
+            "customer_id": {"type": "integer"},
+            "product_id": {"type": "integer"},
+            "quantity": {"type": "integer"},
+            "unit_price": {"type": "float"},
+            "total_price": {"type": "float"},
+            "payment_method": {"type": "keyword"},
+            "shipping_address": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
+            "status": {"type": "keyword"}
+        }
+    }
+}
+
+# Delete the index if it exists (optional, for clean setup)
+if es.indices.exists(index=index_name):
+    es.indices.delete(index=index_name)
+
+# Create the index with the mapping
+es.indices.create(index=index_name, body=mapping)
+
 # Fetch the data
 response = requests.get(data_url)
 transactions = response.json()
 
-# Index the data into Elasticsearch
-index_name = "transactions"
+# Function to convert date format
+def convert_date(date_str):
+    # Convert from "MM/DD/YYYY" to "YYYY-MM-DD"
+    date_obj = datetime.strptime(date_str, "%m/%d/%Y")
+    return date_obj.strftime("%Y-%m-%d")
+
+# Index the data with date conversion
 for transaction in transactions:
+    # Convert the transaction_date before indexing
+    # transaction["transaction_date"] = convert_date(transaction["transaction_date"])
     es.index(index=index_name, id=transaction["transaction_id"], body=transaction)
 
 print(f"Indexed {len(transactions)} transactions into Elasticsearch.")
