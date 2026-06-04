@@ -1,0 +1,73 @@
+name: elasticsearch-training
+
+x-gelf-logging: &gelf-logging
+  driver: gelf
+  options:
+    gelf-address: "udp://127.0.0.1:12201"
+    tag: "{{.Name}}"
+    labels: "com.docker.compose.project,com.docker.compose.service"
+    mode: non-blocking
+    max-buffer-size: "4m"
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION:-8.13.0}
+    container_name: es-training-elasticsearch
+    depends_on:
+      - logstash
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.license.self_generated.type=basic
+      - ES_JAVA_OPTS=${ES_JAVA_OPTS:--Xms512m -Xmx512m}
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:9200/_cluster/health >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    logging: *gelf-logging
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION:-8.13.0}
+    container_name: es-training-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - CSP_STRICT=false
+      - CSP_WARNLEGACYBROWSERS=false
+    ports:
+      - "5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    logging: *gelf-logging
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:${STACK_VERSION:-8.13.0}
+    container_name: es-training-logstash
+    environment:
+      - LS_JAVA_OPTS=${LS_JAVA_OPTS:--Xms256m -Xmx256m}
+    ports:
+      - "12201:12201/udp"
+      - "12201:12201/tcp"
+      - "9600:9600"
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    logging: *gelf-logging
+
+  demo-log-generator:
+    image: alpine:3.20
+    container_name: es-training-demo-log-generator
+    command: ["sh", "/usr/local/bin/generate-logs.sh"]
+    volumes:
+      - ./demo-logs/generate-logs.sh:/usr/local/bin/generate-logs.sh:ro
+    depends_on:
+      - logstash
+    logging: *gelf-logging
+
+volumes:
+  es-data:
