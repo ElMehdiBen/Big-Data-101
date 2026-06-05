@@ -1,0 +1,2300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elasticsearch Training</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --slide-w: 1040px;
+  --slide-h: 585px;
+  --deck-scale: 1;
+  --white: #ffffff;
+  --off: #f8f8f6;
+  --border: #e5e5e0;
+  --muted: #888880;
+  --body: #2a2a28;
+  --head: #111110;
+  --teal: #007d75;
+  --teal-light: #e6f5f4;
+  --yellow: #d97706;
+  --yellow-light: #fef3c7;
+  --blue: #1d4ed8;
+  --blue-light: #eff6ff;
+  --red: #c2410c;
+  --red-light: #fff7ed;
+  --green: #166534;
+  --green-light: #f0fdf4;
+  --purple: #6d28d9;
+  --purple-light: #f5f3ff;
+  --font: 'IBM Plex Sans', sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+
+body {
+  font-family: var(--font);
+  background: #eeede8;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+#topbar {
+  position: fixed; top:0; left:0; right:0; z-index:200;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; height: 44px;
+  padding: 0 20px; gap: 16px;
+}
+#topbar .brand { font-family: var(--mono); font-size:12px; color: var(--teal); font-weight:600; white-space:nowrap; }
+#topbar .spacer { flex:0 0 auto; }
+#section-strip {
+  display: flex; align-items: center; gap: 2px;
+  flex:1 1 auto; min-width:0; max-width:none;
+  overflow-x: auto; scrollbar-width: none;
+}
+#section-strip::-webkit-scrollbar { display:none; }
+.stab {
+  padding: 4px 12px; font-size: 11px; font-family: var(--mono);
+  color: var(--muted); cursor: pointer; white-space:nowrap;
+  border-radius: 20px; transition: all .15s;
+}
+.stab:hover { color: var(--body); background: var(--off); }
+.stab.on { background: var(--teal); color: white; }
+#ctrl { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+#ctrl button {
+  background:none; border: 1px solid var(--border); color: var(--body);
+  font-family: var(--mono); font-size:11px; padding: 5px 12px;
+  border-radius: 4px; cursor:pointer; transition: all .12s;
+}
+#ctrl button:hover { border-color: var(--teal); color: var(--teal); }
+#sc { font-family:var(--mono); font-size:11px; color:var(--muted); min-width:52px; text-align:center; }
+#pbar { position:fixed; top:44px; left:0; height:3px; background:var(--teal); transition:width .25s; z-index:201; }
+
+/* ── DECK ── */
+#stage {
+  margin-top: 60px;
+  padding-bottom: 80px;
+  position: relative;
+  display:flex;
+  justify-content:center;
+}
+
+#deck {
+  position:absolute;
+  top:24px;
+  left:50%;
+  width: var(--slide-w);
+  transform: translateX(-50%) scale(var(--deck-scale));
+  transform-origin: top center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.slide {
+  width: var(--slide-w); min-height: var(--slide-h);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.08);
+  display: none; flex-direction: column;
+  position: relative; overflow: hidden;
+}
+.slide.on { display: flex; }
+
+/* ── SLIDE HEADER ── */
+.sh {
+  display: flex; align-items: center; gap: 10px;
+  padding: 16px 48px; border-bottom: 1px solid var(--border);
+  background: var(--white); flex-shrink:0;
+}
+.sh .chip {
+  font-family: var(--mono); font-size: 10px; font-weight:600;
+  padding: 3px 9px; border-radius: 3px; letter-spacing:.04em;
+  white-space:nowrap;
+}
+.chip-teal   { background: var(--teal-light);   color: var(--teal);   }
+.chip-yellow { background: var(--yellow-light);  color: var(--yellow); }
+.chip-blue   { background: var(--blue-light);    color: var(--blue);   }
+.chip-red    { background: var(--red-light);     color: var(--red);    }
+.chip-green  { background: var(--green-light);   color: var(--green);  }
+.chip-purple { background: var(--purple-light);  color: var(--purple); }
+.sh h2 { font-size: 18px; font-weight: 600; color: var(--head); }
+
+/* ── SLIDE BODY ── */
+.sb { flex:1; padding: 36px 48px; display:flex; flex-direction:column; gap:20px; }
+.sb.center { align-items:center; justify-content:center; text-align:center; }
+.sb.two { display:grid; grid-template-columns:1fr 1fr; gap:32px; padding:36px 48px; }
+.sb.three { display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; padding:36px 48px; }
+.sb.two > *, .sb.three > *, .two-thirds > *, .one-third > * { min-width:0; }
+
+/* ── SLIDE FOOTER ── */
+.sf {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 0 24px; height:30px;
+  border-top: 1px solid var(--border);
+  background: var(--off); flex-shrink:0;
+}
+.sf span { font-family:var(--mono); font-size:10px; color: var(--muted); }
+.cover .sf,
+.divider .sf {
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+}
+
+/* ── COVER ── */
+.cover {
+  background: var(--white);
+  justify-content: center;
+  padding: 64px 80px;
+  position:relative;
+}
+.cover .eyebrow { font-family:var(--mono); font-size:11px; color:var(--teal); letter-spacing:.12em; text-transform:uppercase; margin-bottom:20px; }
+.cover h1 { font-size: 52px; font-weight:700; color: var(--head); line-height:1.1; }
+.cover h1 em { color: var(--teal); font-style:normal; }
+.cover .sub { margin-top:16px; font-size:16px; color:var(--muted); max-width:520px; line-height:1.6; font-weight:300; }
+.cover .meta { margin-top:28px; font-family:var(--mono); font-size:11px; color:var(--muted); }
+.cover-deco {
+  position:absolute; right:80px; top:50%; transform:translateY(-50%);
+  width:220px; height:220px; border-radius:50%;
+  border: 1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+}
+.cover-deco-inner {
+  width:150px; height:150px; border-radius:50%;
+  border: 1px solid #d0e8e6;
+  display:flex; align-items:center; justify-content:center;
+  background: var(--teal-light);
+  font-size:52px;
+}
+
+/* ── SECTION DIVIDER ── */
+.divider {
+  background: var(--head);
+  justify-content:center;
+  padding: 64px 80px;
+  position:relative; overflow:hidden;
+}
+.divider .dtag { font-family:var(--mono); font-size:11px; color: rgba(255,255,255,.4); letter-spacing:.14em; text-transform:uppercase; margin-bottom:14px; }
+.divider h2 { font-size:42px; font-weight:700; color:white; }
+.divider h2 em { color: var(--teal); font-style:normal; }
+.divider .ddesc { margin-top:12px; font-size:15px; color:rgba(255,255,255,.5); max-width:480px; line-height:1.6; font-weight:300; }
+.divider .dnum { position:absolute; right:60px; top:50%; transform:translateY(-50%); font-family:var(--mono); font-size:160px; font-weight:700; color:rgba(255,255,255,.04); line-height:1; pointer-events:none; }
+.divider .sf { background:rgba(255,255,255,.04); border-top:1px solid rgba(255,255,255,.08); }
+.divider .sf span { color: rgba(255,255,255,.25); }
+
+/* ── TYPOGRAPHY ── */
+h3.t { font-size:15px; font-weight:600; color:var(--head); margin-bottom:10px; }
+h3.t.sm { font-size:13px; }
+p.lead { font-size:22px; font-weight:300; color:var(--head); line-height:1.6; max-width:700px; }
+p.body { font-size:14px; color:var(--body); line-height:1.65; }
+p.body strong { color:var(--head); font-weight:600; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--off); border:1px solid var(--border);
+  border-radius:6px; padding:18px 20px;
+}
+.card.teal   { border-left:3px solid var(--teal);   background:var(--teal-light);  }
+.card.yellow { border-left:3px solid var(--yellow);  background:var(--yellow-light); }
+.card.blue   { border-left:3px solid var(--blue);    background:var(--blue-light);  }
+.card.red    { border-left:3px solid var(--red);     background:var(--red-light);   }
+.card.green  { border-left:3px solid var(--green);   background:var(--green-light); }
+.card.purple { border-left:3px solid var(--purple);  background:var(--purple-light); }
+.card h4 { font-size:13px; font-weight:600; color:var(--head); margin-bottom:7px; }
+.card p, .card li { font-size:13px; color:var(--body); line-height:1.55; }
+.card ul { list-style:none; display:flex; flex-direction:column; gap:5px; padding-left:0; }
+.card ul li { display:flex; align-items:baseline; gap:7px; }
+.card ul li::before { content:'→'; color:var(--teal); font-size:11px; flex-shrink:0; }
+.card ul li code { flex-shrink:0; }
+
+/* ── CODE ── */
+code { font-family:var(--mono); font-size:12px; background:#f0f0ec; color:#c2410c; padding:1px 5px; border-radius:3px; }
+.cblock {
+  background:#1a1a18; border-radius:6px;
+  padding:16px 20px; font-family:var(--mono); font-size:12px;
+  color:#d4d4c8; line-height:1.65; overflow-x:auto;
+  max-width:100%; white-space:pre-wrap; overflow-wrap:normal; tab-size:2;
+}
+.cblock .kw  { color:#7dd3fc; }
+.cblock .str { color:#86efac; }
+.cblock .key { color:#fcd34d; }
+.cblock .num { color:#f9a8d4; }
+.cblock .cmt { color:#4b5563; font-style:italic; }
+.cblock .fn  { color:#c4b5fd; }
+
+/* ── TABLE ── */
+table.t {
+  width:100%; border-collapse:collapse; font-size:13px;
+}
+table.t th {
+  background:var(--off); color:var(--muted);
+  font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase;
+  padding:9px 14px; text-align:left; border-bottom:1px solid var(--border);
+  border-top:1px solid var(--border);
+}
+table.t td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--body); vertical-align:top; }
+table.t td:first-child { color:var(--head); font-weight:500; }
+table.t tr:last-child td { border-bottom:none; }
+
+/* ── MISC COMPONENTS ── */
+.tag { display:inline-block; font-family:var(--mono); font-size:11px; padding:2px 8px; border-radius:3px; border:1px solid; }
+.tag.teal   { background:var(--teal-light);   color:var(--teal);   border-color:#b2d8d6; }
+.tag.yellow { background:var(--yellow-light);  color:var(--yellow); border-color:#fde68a; }
+.tag.blue   { background:var(--blue-light);    color:var(--blue);   border-color:#bfdbfe; }
+.tag.red    { background:var(--red-light);     color:var(--red);    border-color:#fed7aa; }
+.tag.green  { background:var(--green-light);   color:var(--green);  border-color:#bbf7d0; }
+
+.step { display:flex; gap:14px; align-items:flex-start; }
+.step .n {
+  width:26px; height:26px; border-radius:50%;
+  background:var(--teal); color:white;
+  font-family:var(--mono); font-size:11px; font-weight:600;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;
+}
+.step-body h4 { font-size:13px; font-weight:600; color:var(--head); margin-bottom:3px; }
+.step-body p { font-size:13px; color:var(--body); line-height:1.5; }
+
+.note {
+  background:var(--yellow-light); border:1px solid #fde68a;
+  border-left:3px solid var(--yellow);
+  border-radius:4px; padding:12px 16px;
+}
+.note .nlabel { font-family:var(--mono); font-size:10px; color:var(--yellow); font-weight:600; margin-bottom:5px; }
+.note p { font-size:13px; color:var(--body); line-height:1.5; }
+.note p strong { color:var(--head); }
+
+.pill-flow { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.pill-flow .arrow { color:var(--border); font-size:18px; }
+
+.big-center { text-align:center; }
+.big-center .icon { font-size:56px; margin-bottom:16px; }
+.big-center .label { font-size:14px; font-weight:600; color:var(--head); }
+.big-center .desc { font-size:12px; color:var(--muted); margin-top:4px; }
+
+.divider-list { display:flex; flex-direction:column; gap:8px; margin-top:20px; }
+.divider-list .di { display:flex; align-items:center; gap:10px; font-size:14px; color:rgba(255,255,255,.55); }
+.divider-list .di .dot { width:5px; height:5px; border-radius:50%; background:var(--teal); flex-shrink:0; }
+.divider-list .di.on { color:rgba(255,255,255,.85); }
+
+.two-thirds { display:grid; grid-template-columns:2fr 1fr; gap:32px; padding:36px 48px; flex:1; }
+.one-third  { display:grid; grid-template-columns:1fr 2fr; gap:32px; padding:36px 48px; flex:1; }
+
+hr.div { border:none; border-top:1px solid var(--border); margin:4px 0; }
+
+.badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:500; }
+.badge.teal { background:var(--teal); color:white; }
+.badge.gray { background:var(--off); color:var(--muted); border:1px solid var(--border); }
+
+.arch-row { display:flex; align-items:stretch; gap:0; }
+.arch-box {
+  flex:1; background:var(--off); border:1px solid var(--border);
+  border-radius:6px; padding:16px; text-align:center;
+}
+.arch-box .icon { font-size:28px; margin-bottom:8px; }
+.arch-box h4 { font-size:13px; font-weight:600; color:var(--head); margin-bottom:4px; }
+.arch-box p { font-size:11px; color:var(--muted); line-height:1.5; }
+.arch-arr { display:flex; align-items:center; padding:0 6px; color:var(--border); font-size:20px; }
+
+.shard-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.shard-node { background:var(--off); border:1px solid var(--border); border-radius:6px; padding:12px 14px; }
+.shard-node .nlabel { font-family:var(--mono); font-size:10px; color:var(--muted); margin-bottom:8px; }
+.shard-pills { display:flex; gap:5px; flex-wrap:wrap; }
+
+.mapping-row { display:grid; grid-template-columns:120px 100px 1fr; gap:0; border-bottom:1px solid var(--border); padding:8px 14px; align-items:center; }
+.mapping-row:last-child { border-bottom:none; }
+.mapping-row .fname { font-family:var(--mono); font-size:12px; color:var(--head); font-weight:600; }
+.mapping-row .ftype { font-family:var(--mono); font-size:11px; }
+.mapping-row .fdesc { font-size:12px; color:var(--muted); }
+
+.practice-box {
+  background:var(--off); border:2px dashed var(--border);
+  border-radius:8px; padding:24px 28px; display:flex; flex-direction:column; gap:16px;
+}
+.practice-box .title-row { display:flex; align-items:center; gap:10px; }
+.practice-box .title-row h3 { font-size:16px; font-weight:600; color:var(--head); }
+
+.cols { display:flex; gap:16px; }
+.col { flex:1; display:flex; flex-direction:column; gap:10px; }
+
+.bool-row { display:grid; grid-template-columns:100px 1fr; gap:0; border-bottom:1px solid var(--border); padding:10px 0; align-items:start; }
+.bool-row:last-child { border-bottom:none; }
+.bool-row code { white-space:nowrap; }
+.bool-row p { font-size:13px; color:var(--body); line-height:1.5; padding-left:14px; }
+
+@media (max-width: 760px) {
+  #topbar { padding:0 10px; gap:8px; }
+  #section-strip { display:none; }
+  #ctrl { gap:6px; }
+  #ctrl button { padding:5px 10px; }
+
+  #stage {
+    width:100% !important;
+    height:auto !important;
+    min-height:0;
+    margin-top:60px;
+    padding:0 0 32px;
+  }
+  #deck {
+    position:static;
+    width:100%;
+    transform:none !important;
+  }
+  .slide {
+    width:100%;
+    min-height:0;
+    border-left:none;
+    border-right:none;
+    border-radius:0;
+    box-shadow:none;
+    overflow:visible;
+  }
+  .sh { padding:14px 18px; }
+  .sh h2 { font-size:16px; }
+  .sb,
+  .sb.two,
+  .sb.three,
+  .two-thirds,
+  .one-third {
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    max-width:100%;
+    padding:22px 18px;
+    gap:16px;
+  }
+  .sb > * {
+    width:100%;
+    max-width:100%;
+  }
+  .cover,
+  .divider { padding:52px 22px; }
+  .cover h1 { font-size:34px; }
+  .cover .sub,
+  p.lead { font-size:15px; }
+  .cover-deco {
+    position:static;
+    transform:none;
+    width:140px;
+    height:140px;
+    margin-top:28px;
+  }
+  .cover-deco-inner {
+    width:96px;
+    height:96px;
+    font-size:36px;
+  }
+  .divider h2 { font-size:30px; }
+  .divider .dnum { display:none; }
+  .arch-row,
+  .cols { flex-direction:column; }
+  .arch-arr { display:none; }
+  .mapping-row,
+  .bool-row {
+    grid-template-columns:1fr;
+    gap:5px;
+  }
+  .bool-row p { padding-left:0; }
+  .sf { padding:0 18px; }
+  .cblock {
+    white-space:pre-wrap !important;
+    overflow-wrap:anywhere;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <span class="brand">⚡ elasticsearch</span>
+  <div id="section-strip"></div>
+  <div class="spacer"></div>
+  <div id="ctrl">
+    <button onclick="prev()">← Prev</button>
+    <span id="sc">1/1</span>
+    <button onclick="next()">Next →</button>
+  </div>
+</div>
+<div id="pbar"></div>
+
+<div id="stage">
+<div id="deck">
+
+<!-- ════════════════════════════════
+  COVER
+════════════════════════════════ -->
+<div class="slide cover" data-s="Intro">
+  <div class="eyebrow">General Performance · Training</div>
+  <h1>Elastic<em>search</em><br>Fundamentals</h1>
+  <p class="sub">A 1.5-day workshop — from core concepts to hands-on pipelines with Logstash, Kibana, and Python.</p>
+  <p class="meta">By El Mehdi BENYOUSSEF</p>
+  <div class="cover-deco"><div class="cover-deco-inner">🔍</div></div>
+  <div class="sf"><span>General Performance</span><span>01</span></div>
+</div>
+
+<!-- ════════════════════════════════
+  AGENDA
+════════════════════════════════ -->
+<div class="slide" data-s="Intro">
+  <div class="sh"><span class="chip chip-teal">Agenda</span><h2>Course Plan</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <p style="font-family:var(--mono);font-size:10px;color:var(--teal);font-weight:600;letter-spacing:.1em;margin-bottom:10px;">DAY 1 — MORNING · THEORY (4h)</p>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--body);"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;">45m</span>What is Elasticsearch &amp; the Elastic Stack</div>
+          <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--body);"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;">20m</span>Training scenario: live application logs</div>
+          <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--body);"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;">40m</span>Architecture: nodes, clusters, shards</div>
+          <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--body);"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;">40m</span>Data modeling, aliases &amp; mappings</div>
+          <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--body);"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;">45m</span>Query DSL: search &amp; aggregations</div>
+        </div>
+      </div>
+      <hr class="div">
+      <div>
+        <p style="font-family:var(--mono);font-size:10px;color:var(--teal);font-weight:600;letter-spacing:.1em;margin-bottom:10px;">DAY 1 — AFTERNOON · FIRST PRACTICE (2h)</p>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--body);"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;">30m</span>Setup — Docker / local install</div>
+          <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--body);"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;">45m</span>Practice 1 — Index, aliases &amp; CRUD via REST</div>
+          <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--body);"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;">45m</span>Practice 2 — Search, aggregations &amp; analyzers</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <p style="font-family:var(--mono);font-size:10px;color:var(--yellow);font-weight:600;letter-spacing:.1em;margin-bottom:10px;">DAY 2 — MORNING · FULL PRACTICE (4h)</p>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--body);"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;">35m</span>Logstash concepts &amp; live Docker pipeline</div>
+          <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--body);"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;">45m</span>Practice 3 — Ingest and troubleshoot logs</div>
+          <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--body);"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;">35m</span>Kibana concepts &amp; dashboard recipe</div>
+          <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--body);"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;">35m</span>Practice 4 — Build a dashboard</div>
+          <div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--body);"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;">50m</span>Practice 5 — Python/REST app integration</div>
+        </div>
+      </div>
+      <hr class="div">
+      <div>
+        <p style="font-family:var(--mono);font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.1em;margin-bottom:10px;">PREREQUISITES</p>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="font-size:13px;color:var(--body);">Basic Linux CLI &nbsp;·&nbsp; Docker &nbsp;·&nbsp; curl or Postman</div>
+          <div style="font-size:13px;color:var(--body);">Python 3.x (Day 2) &nbsp;·&nbsp; No prior ES knowledge required</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>02</span></div>
+</div>
+
+<!-- ════════════════════════════════
+  TRAINING SCENARIO
+════════════════════════════════ -->
+<div class="slide" data-s="Intro">
+  <div class="sh"><span class="chip chip-teal">Scenario</span><h2>One Story for the Whole Training</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <p class="body">During the workshop, we build a small observability platform for an online service called <strong>Northwind Search</strong>. Every concept reuses the same log stream so the exercises connect naturally.</p>
+      <div class="card teal">
+        <h4>Core indices</h4>
+        <ul>
+          <li><code>app-logs-*</code> — application events from checkout, auth, search, and recommendations</li>
+          <li><code>web-logs-*</code> — HTTP access logs enriched by Logstash</li>
+          <li><code>security-events</code> — authentication and suspicious activity examples</li>
+        </ul>
+      </div>
+      <div class="card blue">
+        <h4>Trainer demo rhythm</h4>
+        <p>Explain the concept, show a 2-minute command/demo, then let participants repeat a small variation. This keeps theory and practice tightly coupled.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <h3 class="t">Example log messages</h3>
+      <div class="cblock" style="font-size:11px;">
+{ <span class="key">"service"</span>: <span class="str">"checkout"</span>,
+  <span class="key">"level"</span>: <span class="str">"WARN"</span>,
+  <span class="key">"message"</span>: <span class="str">"Payment gateway timeout after 2400ms"</span> }
+
+{ <span class="key">"service"</span>: <span class="str">"search"</span>,
+  <span class="key">"level"</span>: <span class="str">"INFO"</span>,
+  <span class="key">"message"</span>: <span class="str">"Index refresh completed in 42ms"</span> }
+
+{ <span class="key">"service"</span>: <span class="str">"auth"</span>,
+  <span class="key">"level"</span>: <span class="str">"ERROR"</span>,
+  <span class="key">"message"</span>: <span class="str">"Suspicious login burst blocked"</span> }
+      </div>
+      <div class="note">
+        <div class="nlabel">Outcome</div>
+        <p>By the end, participants can ingest logs, map them correctly, search incidents, aggregate KPIs, and build a Kibana dashboard from live data.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>03</span></div>
+</div>
+
+<!-- ════════════════════════════════
+  SECTION: WHAT IS ES
+════════════════════════════════ -->
+<div class="slide divider" data-s="Intro">
+  <div class="dtag">Day 1 · Morning · Block 1 of 4</div>
+  <h2>What is <em>Elasticsearch</em>?</h2>
+  <p class="ddesc">Where it comes from, what it does, and where it fits in your stack.</p>
+  <div class="divider-list">
+    <div class="di on"><div class="dot"></div>The Lucene foundation</div>
+    <div class="di on"><div class="dot"></div>Key capabilities</div>
+    <div class="di on"><div class="dot"></div>The Elastic Stack (ELK)</div>
+    <div class="di on"><div class="dot"></div>ES vs relational databases</div>
+  </div>
+  <div class="dnum">01</div>
+  <div class="sf"><span>General Performance</span><span>04</span></div>
+</div>
+
+<!-- ════ WHAT IS ES ════ -->
+<div class="slide" data-s="Intro">
+  <div class="sh"><span class="chip chip-teal">Elasticsearch</span><h2>What is Elasticsearch?</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <p class="body">Elasticsearch is an <strong>open-source, distributed search and analytics engine</strong> built on top of Apache Lucene.</p>
+      <p class="body">It stores data as <strong>JSON documents</strong> and exposes everything through a <strong>RESTful HTTP API</strong> — no special driver, any language works.</p>
+      <p class="body">Documents become searchable within <strong>~1 second</strong> of indexing — making it suitable for real-time monitoring and live search.</p>
+      <div class="note">
+        <div class="nlabel">💡 Analogy</div>
+        <p>Think of ES as the <strong>index at the back of a textbook</strong> — but for terabytes of JSON, with millisecond lookup. Your app's database is the full text; ES is the index that makes it searchable.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <h3 class="t">Common use cases</h3>
+      <div class="card teal"><h4>🔎 Full-text search</h4><p>Product search, documentation portals, e-commerce — anywhere users type freeform queries.</p></div>
+      <div class="card blue"><h4>📊 Log &amp; metrics analytics</h4><p>SIEM, APM, infrastructure monitoring — ingest high-volume event streams, query in real time.</p></div>
+      <div class="card yellow"><h4>📈 Business analytics</h4><p>BI dashboards via Kibana — aggregations on large datasets without a data warehouse.</p></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>05</span></div>
+</div>
+
+<!-- ════ LUCENE ════ -->
+<div class="slide" data-s="Intro">
+  <div class="sh"><span class="chip chip-teal">Elasticsearch</span><h2>Built on Apache Lucene</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <p class="body"><strong>Apache Lucene</strong> is the Java search library powering ES under the hood. It handles the inverted index, tokenization, and relevance scoring.</p>
+      <p class="body">Elasticsearch adds on top of Lucene:</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="step"><div class="n">1</div><div class="step-body"><h4>Distribution</h4><p>Coordinates multiple Lucene instances across nodes into a single cluster.</p></div></div>
+        <div class="step"><div class="n">2</div><div class="step-body"><h4>REST API</h4><p>Every operation — index, search, delete — is an HTTP call with a JSON body.</p></div></div>
+        <div class="step"><div class="n">3</div><div class="step-body"><h4>Operations</h4><p>Cluster health, rebalancing, snapshots, index lifecycle management.</p></div></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="card teal">
+        <h4>Inverted index — the core data structure</h4>
+        <p>An inverted index maps each <strong>term → list of documents</strong> containing it. This is why full-text search is fast: ES looks up matching term postings instead of scanning every document. Actual cost depends on term frequency, scoring, filters, and result size.</p>
+      </div>
+      <div class="note">
+        <div class="nlabel">💡 Analogy</div>
+        <p>A regular database index is like a library catalog sorted by title. An inverted index is like the index at the back of a book — sorted by <strong>keyword</strong>, pointing to where each word appears.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>06</span></div>
+</div>
+
+<!-- ════ ELASTIC STACK ════ -->
+<div class="slide" data-s="Intro">
+  <div class="sh"><span class="chip chip-teal">Elasticsearch</span><h2>The Elastic Stack</h2></div>
+  <div class="sb" style="gap:24px;">
+    <div class="arch-row" style="gap:8px;">
+      <div class="arch-box" style="border-left:3px solid #d97706;">
+        <div class="icon">🥁</div>
+        <h4>Beats</h4>
+        <p>Lightweight shippers. Run on servers, forward raw logs/metrics to Logstash or ES.</p>
+        <div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap;justify-content:center;">
+          <span class="tag yellow">Filebeat</span><span class="tag yellow">Metricbeat</span>
+        </div>
+      </div>
+      <div class="arch-arr">→</div>
+      <div class="arch-box" style="border-left:3px solid var(--purple);">
+        <div class="icon">⚙️</div>
+        <h4>Logstash</h4>
+        <p>Data pipeline. Parses, enriches, and transforms before indexing into ES.</p>
+        <div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap;justify-content:center;">
+          <span class="tag" style="background:var(--purple-light);color:var(--purple);border-color:#ddd6fe;">Input·Filter·Output</span>
+        </div>
+      </div>
+      <div class="arch-arr">→</div>
+      <div class="arch-box" style="border-left:3px solid var(--teal);">
+        <div class="icon">🔍</div>
+        <h4>Elasticsearch</h4>
+        <p>Stores, indexes, and searches. The heart of the stack.</p>
+        <div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap;justify-content:center;">
+          <span class="tag teal">REST API</span><span class="tag teal">JSON docs</span>
+        </div>
+      </div>
+      <div class="arch-arr">→</div>
+      <div class="arch-box" style="border-left:3px solid var(--blue);">
+        <div class="icon">📊</div>
+        <h4>Kibana</h4>
+        <p>Visualization &amp; management UI. Dashboards, charts, Dev Tools.</p>
+        <div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap;justify-content:center;">
+          <span class="tag blue">Dashboards</span><span class="tag blue">Lens</span>
+        </div>
+      </div>
+    </div>
+    <div class="note">
+      <div class="nlabel">💡 Analogy — the restaurant kitchen</div>
+      <p><strong>Beats</strong> = waiters collecting orders &nbsp;·&nbsp; <strong>Logstash</strong> = kitchen that preps &amp; plates &nbsp;·&nbsp; <strong>Elasticsearch</strong> = the pantry &amp; recipe index &nbsp;·&nbsp; <strong>Kibana</strong> = the menu board &amp; manager's dashboard</p>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>07</span></div>
+</div>
+
+<!-- ════ ES VS RDB ════ -->
+<div class="slide" data-s="Intro">
+  <div class="sh"><span class="chip chip-teal">Elasticsearch</span><h2>ES vs Relational Databases</h2></div>
+  <div class="sb" style="gap:16px;">
+    <table class="t">
+      <thead><tr><th>Concept</th><th>RDBMS (PostgreSQL / MySQL)</th><th>Elasticsearch</th></tr></thead>
+      <tbody>
+        <tr><td>Storage unit</td><td>Row in a table</td><td>JSON Document in an Index</td></tr>
+        <tr><td>Grouping</td><td>Table</td><td>Index</td></tr>
+        <tr><td>Schema</td><td>Rigid — must define upfront</td><td>Dynamic mapping — inferred from data</td></tr>
+        <tr><td>Query language</td><td>SQL</td><td>Query DSL (JSON over HTTP)</td></tr>
+        <tr><td>Strengths</td><td>Transactions, JOIN, strong consistency</td><td>Full-text search, aggregations, scale-out</td></tr>
+        <tr><td>Typical role</td><td>Source of truth for writes</td><td>Search layer, analytics, observability</td></tr>
+      </tbody>
+    </table>
+    <div class="card red">
+      <h4>⚠️ Key point — not a replacement</h4>
+      <p>ES is a <strong>complementary layer</strong>, not a drop-in for your RDBMS. You write to PostgreSQL, sync to ES for search. They're teammates — one is optimised for transactions, the other for queries at scale.</p>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>08</span></div>
+</div>
+
+<!-- ════ REST API CHEAT SHEET ════ -->
+<div class="slide" data-s="Intro">
+  <div class="sh"><span class="chip chip-teal">REST API</span><h2>Commands You Will Use All Day</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card teal"><h4>Cluster and indices</h4>
+        <ul>
+          <li><code>GET /_cluster/health</code> — cluster status</li>
+          <li><code>GET /_cat/indices?v</code> — list indices</li>
+          <li><code>GET /app-logs-*/_mapping</code> — inspect schema</li>
+          <li><code>GET /app-logs-*/_count</code> — count documents</li>
+        </ul>
+      </div>
+      <div class="card yellow"><h4>Write operations</h4>
+        <ul>
+          <li><code>PUT /index-name</code> — create index with settings/mapping</li>
+          <li><code>POST /index/_doc</code> — index one document</li>
+          <li><code>POST /index/_bulk</code> — index many documents efficiently</li>
+          <li><code>POST /index/_update/&lt;id&gt;</code> — partial update</li>
+        </ul>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="cblock" style="font-size:11px;">
+<span class="cmt"># Search recent warning/error logs</span>
+<span class="kw">GET</span> /app-logs-*/_search
+{
+  <span class="key">"query"</span>: { <span class="key">"bool"</span>: {
+    <span class="key">"filter"</span>: [
+      { <span class="key">"terms"</span>: { <span class="key">"level"</span>: [<span class="str">"WARN"</span>, <span class="str">"ERROR"</span>] }},
+      { <span class="key">"range"</span>: { <span class="key">"@timestamp"</span>: { <span class="key">"gte"</span>: <span class="str">"now-15m"</span> }}}
+    ]
+  }},
+  <span class="key">"sort"</span>: [{ <span class="key">"@timestamp"</span>: <span class="str">"desc"</span> }],
+  <span class="key">"size"</span>: <span class="num">5</span>
+}
+      </div>
+      <div class="note"><div class="nlabel">Teaching tip</div>
+        <p>Run these in Kibana Dev Tools first. Then show the same request with <code>curl</code> so participants understand Kibana is calling the same HTTP API.</p></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>09</span></div>
+</div>
+
+<!-- ════════════════════════════════
+  SECTION: ARCHITECTURE
+════════════════════════════════ -->
+<div class="slide divider" data-s="Architecture">
+  <div class="dtag">Day 1 · Morning · Block 2 of 4</div>
+  <h2>Core <em>Architecture</em></h2>
+  <p class="ddesc">Nodes, clusters, indices, shards, and replicas — the building blocks of every ES deployment.</p>
+  <div class="divider-list">
+    <div class="di on"><div class="dot"></div>Cluster &amp; node roles</div>
+    <div class="di on"><div class="dot"></div>Indices</div>
+    <div class="di on"><div class="dot"></div>Sharding</div>
+    <div class="di on"><div class="dot"></div>Replication &amp; fault tolerance</div>
+  </div>
+  <div class="dnum">02</div>
+  <div class="sf"><span>General Performance</span><span>10</span></div>
+</div>
+
+<!-- ════ CLUSTER & NODES ════ -->
+<div class="slide" data-s="Architecture">
+  <div class="sh"><span class="chip chip-blue">Architecture</span><h2>Cluster &amp; Nodes</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card teal">
+        <h4>🌐 Cluster</h4>
+        <p>One or more nodes sharing the same <code>cluster.name</code>. They coordinate to store and serve data. You can talk to any node — it routes internally.</p>
+      </div>
+      <div class="card blue">
+        <h4>💻 Master-eligible node</h4>
+        <p>Manages cluster state: which indices exist, shard placement, node membership. One is elected master. Should be dedicated in production (3 minimum to avoid split-brain).</p>
+      </div>
+      <div class="card yellow">
+        <h4>💾 Data node</h4>
+        <p>Stores shards and executes search &amp; indexing. CPU and I/O intensive. Scale out these nodes as data grows.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="background:var(--off);">
+        <h4>🔀 Coordinating node</h4>
+        <p>Receives client requests, fans out to relevant shards, merges results. Any node can coordinate. Can be dedicated for heavy query loads.</p>
+      </div>
+      <div class="note">
+        <div class="nlabel">💡 Analogy — a city library network</div>
+        <p>The <strong>cluster</strong> = the monitoring platform. Each <strong>node</strong> = a server in the platform. The <strong>master</strong> = the coordinator that tracks where each shard lives. <strong>Data nodes</strong> = the machines holding log data.</p>
+      </div>
+      <div class="card red">
+        <h4>🚧 Dev vs Production</h4>
+        <p>A single node is a valid cluster — fine for development. In production: <strong>minimum 3 master-eligible nodes</strong> to prevent split-brain scenarios.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>11</span></div>
+</div>
+
+<!-- ════ INDEX ════ -->
+<div class="slide" data-s="Architecture">
+  <div class="sh"><span class="chip chip-blue">Architecture</span><h2>Index</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <p class="body">An <strong>index</strong> is a logical namespace for related documents — equivalent to a table in a relational DB, but more flexible.</p>
+      <p class="body">Examples: <code>app-logs-2026-06-03</code>, <code>web-logs-2026-06-03</code>, <code>security-events</code>. You can search across multiple indices with a wildcard: <code>*-logs-*</code>.</p>
+      <div class="card teal">
+        <h4>Index settings (set at creation)</h4>
+        <ul>
+          <li><code>number_of_shards</code> — how many primary shards (fixed after creation)</li>
+          <li><code>number_of_replicas</code> — copies per shard (can change later)</li>
+          <li><code>analysis</code> — custom analyzers</li>
+        </ul>
+      </div>
+      <div class="note">
+        <div class="nlabel">⚠️ Important</div>
+        <p>The number of primary shards is <strong>fixed at creation time</strong>. Changing it requires reindexing all data. Plan ahead.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <h3 class="t">Create an index</h3>
+      <div class="cblock">
+<span class="kw">PUT</span> /app-logs-000001
+{
+  <span class="key">"settings"</span>: {
+    <span class="key">"number_of_shards"</span>: <span class="num">3</span>,
+    <span class="key">"number_of_replicas"</span>: <span class="num">1</span>
+  },
+  <span class="key">"mappings"</span>: {
+    <span class="key">"properties"</span>: {
+      <span class="key">"@timestamp"</span>: { <span class="key">"type"</span>: <span class="str">"date"</span> },
+      <span class="key">"service"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+      <span class="key">"level"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+      <span class="key">"message"</span>: { <span class="key">"type"</span>: <span class="str">"text"</span> },
+      <span class="key">"latency_ms"</span>: { <span class="key">"type"</span>: <span class="str">"integer"</span> },
+      <span class="key">"status_code"</span>: { <span class="key">"type"</span>: <span class="str">"integer"</span> }
+    }
+  }
+}
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>12</span></div>
+</div>
+
+<!-- ════ ALIASES ════ -->
+<div class="slide" data-s="Architecture">
+  <div class="sh"><span class="chip chip-blue">Architecture</span><h2>Indexes &amp; Aliases</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <p class="body">An <strong>alias</strong> is a logical name that points to one or more indices. Applications query the alias, while Elasticsearch can rotate the concrete backing indices behind it.</p>
+      <div class="card teal">
+        <h4>Why aliases matter for logs</h4>
+        <ul>
+          <li>Keep the app writing to <code>app-logs-write</code></li>
+          <li>Search across historical data with <code>app-logs</code></li>
+          <li>Rotate daily or by size without changing app code</li>
+        </ul>
+      </div>
+      <div class="note"><div class="nlabel">Trainer demo</div>
+        <p>Create <code>app-logs-000001</code>, attach aliases, index one document through <code>app-logs-write</code>, then search through <code>app-logs</code>.</p></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="cblock" style="font-size:11px;">
+<span class="kw">PUT</span> /app-logs-000001
+{
+  <span class="key">"aliases"</span>: {
+    <span class="key">"app-logs"</span>: {},
+    <span class="key">"app-logs-write"</span>: { <span class="key">"is_write_index"</span>: <span class="kw">true</span> }
+  },
+  <span class="key">"mappings"</span>: { <span class="key">"properties"</span>: {
+    <span class="key">"@timestamp"</span>: { <span class="key">"type"</span>: <span class="str">"date"</span> },
+    <span class="key">"service"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+    <span class="key">"message"</span>: { <span class="key">"type"</span>: <span class="str">"text"</span> }
+  }}
+}
+
+<span class="kw">POST</span> /app-logs-write/_doc
+{ <span class="key">"service"</span>: <span class="str">"checkout"</span>,
+  <span class="key">"message"</span>: <span class="str">"Payment gateway timeout after 2400ms"</span> }
+
+<span class="kw">GET</span> /app-logs/_search
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>13</span></div>
+</div>
+
+<!-- ════ SHARDS ════ -->
+<div class="slide" data-s="Architecture">
+  <div class="sh"><span class="chip chip-blue">Architecture</span><h2>Shards</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <p class="body">A <strong>shard</strong> is a single Lucene instance — the actual unit of storage. An index is split into N shards distributed across nodes.</p>
+      <p class="body">Documents are routed to a shard by:<br><code>shard = hash(_id) % number_of_shards</code></p>
+      <div class="card blue">
+        <h4>Why sharding?</h4>
+        <ul>
+          <li><strong>Scale storage</strong> — data too large for one machine</li>
+          <li><strong>Parallel queries</strong> — each shard searched concurrently</li>
+          <li><strong>Horizontal scale</strong> — add nodes, ES rebalances shards</li>
+        </ul>
+      </div>
+      <div class="note">
+        <div class="nlabel">💡 Analogy</div>
+        <p>Shards are like <strong>separate partitions of the same log stream</strong>. When you search, ES asks each partition in parallel and merges the results.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <h3 class="t">Shard layout — 3 primaries, 1 replica, 2 nodes</h3>
+      <div class="shard-grid">
+        <div class="shard-node">
+          <div class="nlabel">NODE 1</div>
+          <div class="shard-pills">
+            <span class="tag teal">P0</span>
+            <span class="tag teal">P1</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue);border-color:#bfdbfe;">R2</span>
+          </div>
+        </div>
+        <div class="shard-node">
+          <div class="nlabel">NODE 2</div>
+          <div class="shard-pills">
+            <span class="tag teal">P2</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue);border-color:#bfdbfe;">R0</span>
+            <span class="tag" style="background:var(--blue-light);color:var(--blue);border-color:#bfdbfe;">R1</span>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);">
+        <span class="tag teal">P</span> Primary shard &nbsp;·&nbsp;
+        <span class="tag" style="background:var(--blue-light);color:var(--blue);border-color:#bfdbfe;">R</span> Replica shard
+      </div>
+      <div class="card">
+        <h4>Sizing guideline</h4>
+        <p>Aim for <strong>10–50 GB per shard</strong>. Too many small shards waste overhead; too few large shards limit parallelism. Start with 1–3 primaries for most use cases.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>14</span></div>
+</div>
+
+<!-- ════ REPLICAS ════ -->
+<div class="slide" data-s="Architecture">
+  <div class="sh"><span class="chip chip-blue">Architecture</span><h2>Replicas</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <p class="body">A <strong>replica shard</strong> is a copy of a primary shard, always placed on a <em>different node</em>.</p>
+      <div class="card green">
+        <h4>✅ Fault tolerance</h4>
+        <p>If a node fails and its primary shards are lost, ES promotes the replica on another node to primary. No data loss.</p>
+      </div>
+      <div class="card blue">
+        <h4>⚡ Read throughput</h4>
+        <p>Search requests can be served by <em>either</em> the primary or any replica. More replicas = more read capacity. They do add storage and replication work, but ES handles the coordination automatically.</p>
+      </div>
+      <div class="note">
+        <div class="nlabel">💡 Analogy</div>
+        <p>Replicas are like <strong>photocopied chapters stored in a different room</strong>. If the original shelf burns down, you still have the copy — and normally both copies can be read simultaneously.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="card yellow">
+        <h4>⚠️ Replica on a single node</h4>
+        <p>With only 1 node, replicas stay <code>UNASSIGNED</code> — ES refuses to put a replica on the same node as its primary. This is normal in dev; cluster shows <code>yellow</code> status (data safe, not fully redundant).</p>
+      </div>
+      <div class="cblock" style="margin-top:4px;">
+<span class="cmt"># Check cluster health</span>
+<span class="kw">GET</span> /_cluster/health
+
+<span class="cmt"># Change replica count on existing index</span>
+<span class="kw">PUT</span> /app-logs-000001/_settings
+{
+  <span class="key">"number_of_replicas"</span>: <span class="num">2</span>
+}
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>15</span></div>
+</div>
+
+<!-- ════════════════════════════════
+  SECTION: DATA MODELING
+════════════════════════════════ -->
+<div class="slide divider" data-s="Data Modeling">
+  <div class="dtag">Day 1 · Morning · Block 3 of 4</div>
+  <h2>Data <em>Modeling</em></h2>
+  <p class="ddesc">How you define your data directly affects search quality and performance.</p>
+  <div class="divider-list">
+    <div class="di on"><div class="dot"></div>JSON documents</div>
+    <div class="di on"><div class="dot"></div>Dynamic vs explicit mapping</div>
+    <div class="di on"><div class="dot"></div>Field types</div>
+    <div class="di on"><div class="dot"></div>Text analysis &amp; analyzers</div>
+    <div class="di on"><div class="dot"></div>Nested documents</div>
+  </div>
+  <div class="dnum">03</div>
+  <div class="sf"><span>General Performance</span><span>16</span></div>
+</div>
+
+<!-- ════ JSON DOCUMENTS ════ -->
+<div class="slide" data-s="Data Modeling">
+  <div class="sh"><span class="chip chip-green">Data Modeling</span><h2>JSON Documents</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <p class="body">Every piece of data in ES is a <strong>JSON document</strong>. A document is a flat or nested collection of field-value pairs.</p>
+      <p class="body">Each document has a system metadata field <code>_id</code> (auto-generated or user-supplied), and lives inside an <strong>index</strong>.</p>
+      <div class="card teal">
+        <h4>Document anatomy</h4>
+        <ul>
+          <li><code>_index</code> — which index it belongs to</li>
+          <li><code>_id</code> — unique identifier within the index</li>
+          <li><code>_source</code> — the original JSON you indexed</li>
+          <li><code>_score</code> — relevance score (on search results)</li>
+        </ul>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <h3 class="t">Example document</h3>
+      <div class="cblock">
+{
+  <span class="key">"_index"</span>: <span class="str">"app-logs-000001"</span>,
+  <span class="key">"_id"</span>: <span class="str">"evt-9f2a"</span>,
+  <span class="key">"_source"</span>: {
+    <span class="key">"@timestamp"</span>: <span class="str">"2026-06-03T10:15:30Z"</span>,
+    <span class="key">"service"</span>: <span class="str">"checkout"</span>,
+    <span class="key">"level"</span>: <span class="str">"WARN"</span>,
+    <span class="key">"message"</span>: <span class="str">"Payment gateway timeout after 2400ms"</span>,
+    <span class="key">"latency_ms"</span>: <span class="num">2400</span>,
+    <span class="key">"status_code"</span>: <span class="num">504</span>,
+    <span class="key">"trace_id"</span>: <span class="str">"trc-8842"</span>
+  }
+}
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>17</span></div>
+</div>
+
+<!-- ════ DYNAMIC MAPPING ════ -->
+<div class="slide" data-s="Data Modeling">
+  <div class="sh"><span class="chip chip-green">Data Modeling</span><h2>Dynamic Mapping</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <p class="body">When you index a document without defining a mapping, ES <strong>automatically infers field types</strong> from the first document it sees.</p>
+      <div class="card teal">
+        <h4>Auto-detection rules</h4>
+        <ul>
+          <li><code>"hello"</code> → <code>text</code> + <code>keyword</code></li>
+          <li><code>42</code> → <code>long</code></li>
+          <li><code>3.14</code> → <code>float</code></li>
+          <li><code>true</code> → <code>boolean</code></li>
+          <li><code>"2024-01-15"</code> → <code>date</code></li>
+          <li><code>{…}</code> → <code>object</code></li>
+        </ul>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card red">
+        <h4>⚠️ The trap — type conflicts</h4>
+        <p>If the first document has <code>"latency_ms": "fast"</code>, ES maps <code>latency_ms</code> as <code>text</code>. Subsequent documents with <code>"latency_ms": 2400</code> will fail to index. Dynamic mapping is convenient for prototyping — risky in production.</p>
+      </div>
+      <div class="card yellow">
+        <h4>Protect yourself</h4>
+        <ul>
+          <li>Set <code>"dynamic": "strict"</code> to reject unknown fields</li>
+          <li>Or <code>"dynamic": false</code> to silently ignore them</li>
+          <li>Define explicit mappings for production indices</li>
+        </ul>
+      </div>
+      <div class="cblock" style="font-size:11px;">
+<span class="cmt"># Check auto-generated mapping</span>
+<span class="kw">GET</span> /app-logs-000001/_mapping
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>18</span></div>
+</div>
+
+<!-- ════ MAPPING CONFLICT LAB ════ -->
+<div class="slide" data-s="Data Modeling">
+  <div class="sh"><span class="chip chip-green">Mini Lab</span><h2>Mapping Conflict Demo</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="practice-box">
+        <div class="title-row"><span class="chip chip-green">🧪 Exercise</span><h3>Break it on purpose, then fix it</h3></div>
+        <p style="font-size:13px;color:var(--body);">This makes mapping risks concrete before the production mapping slide.</p>
+      </div>
+      <div class="cblock" style="font-size:11px;">
+<span class="kw">DELETE</span> /mapping-conflict-demo
+
+<span class="cmt"># First document maps latency_ms as text</span>
+<span class="kw">POST</span> /mapping-conflict-demo/_doc
+{ <span class="key">"service"</span>: <span class="str">"checkout"</span>,
+  <span class="key">"latency_ms"</span>: <span class="str">"fast"</span>,
+  <span class="key">"message"</span>: <span class="str">"Checkout completed quickly"</span> }
+
+<span class="cmt"># Second document fails: number conflicts with text</span>
+<span class="kw">POST</span> /mapping-conflict-demo/_doc
+{ <span class="key">"service"</span>: <span class="str">"checkout"</span>,
+  <span class="key">"latency_ms"</span>: <span class="num">2400</span>,
+  <span class="key">"message"</span>: <span class="str">"Payment gateway timeout after 2400ms"</span> }
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card red"><h4>What participants should see</h4>
+        <p>Elasticsearch rejects the second document because one field cannot be both <code>text</code> and <code>integer</code> inside the same index.</p></div>
+      <div class="card green"><h4>Fix</h4>
+        <ul>
+          <li>Delete the demo index</li>
+          <li>Create it again with explicit mapping</li>
+          <li>Normalize incoming values before indexing</li>
+        </ul>
+      </div>
+      <div class="cblock" style="font-size:11px;">
+<span class="kw">PUT</span> /mapping-conflict-demo
+{ <span class="key">"mappings"</span>: { <span class="key">"properties"</span>: {
+  <span class="key">"service"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+  <span class="key">"latency_ms"</span>: { <span class="key">"type"</span>: <span class="str">"integer"</span> },
+  <span class="key">"message"</span>: { <span class="key">"type"</span>: <span class="str">"text"</span> }
+}}}
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>19</span></div>
+</div>
+
+<!-- ════ FIELD TYPES ════ -->
+<div class="slide" data-s="Data Modeling">
+  <div class="sh"><span class="chip chip-green">Data Modeling</span><h2>Field Types</h2></div>
+  <div class="sb" style="gap:16px;">
+    <div style="background:var(--off);border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+      <div class="mapping-row" style="background:var(--off);border-bottom:1px solid var(--border);">
+        <span style="font-family:var(--mono);font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.08em;">FIELD TYPE</span>
+        <span style="font-family:var(--mono);font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.08em;">ANALYZED?</span>
+        <span style="font-family:var(--mono);font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.08em;">USE FOR</span>
+      </div>
+      <div class="mapping-row">
+        <span class="fname"><span class="tag teal">text</span></span>
+        <span class="ftype" style="color:var(--green);">Yes ✓</span>
+        <span class="fdesc">Full-text search (titles, descriptions, body text)</span>
+      </div>
+      <div class="mapping-row">
+        <span class="fname"><span class="tag yellow">keyword</span></span>
+        <span class="ftype" style="color:var(--red);">No ✗</span>
+        <span class="fdesc">Exact match, aggregations, sort, filter (IDs, tags, status, email)</span>
+      </div>
+      <div class="mapping-row">
+        <span class="fname"><span class="tag" style="background:#fff7ed;color:#9a3412;border-color:#fdba74;">integer / float</span></span>
+        <span class="ftype" style="color:var(--red);">No ✗</span>
+        <span class="fdesc">Numbers, ranges, aggregations (latency_ms, status_code, retries)</span>
+      </div>
+      <div class="mapping-row">
+        <span class="fname"><span class="tag blue">date</span></span>
+        <span class="ftype" style="color:var(--red);">No ✗</span>
+        <span class="fdesc">Timestamps, date ranges, date histograms (ISO 8601 or epoch ms)</span>
+      </div>
+      <div class="mapping-row">
+        <span class="fname"><span class="tag" style="background:var(--green-light);color:var(--green);border-color:#bbf7d0;">boolean</span></span>
+        <span class="ftype" style="color:var(--red);">No ✗</span>
+        <span class="fdesc">Flags (in_stock, is_active, published)</span>
+      </div>
+      <div class="mapping-row" style="border-bottom:none;">
+        <span class="fname"><span class="tag" style="background:var(--purple-light);color:var(--purple);border-color:#ddd6fe;">nested</span></span>
+        <span class="ftype" style="color:var(--red);">No ✗</span>
+        <span class="fdesc">Arrays of objects where each object must be queried independently</span>
+      </div>
+    </div>
+    <div class="card red">
+      <h4>⚠️ text vs keyword — the most common mistake</h4>
+      <p><code>text</code> is analyzed — <code>"Hello World"</code> becomes tokens <code>["hello", "world"]</code>. You can't sort or aggregate on it. <code>keyword</code> stores the raw value. For fields you need <em>both</em> (search + aggregate), use <code>fields: &#123; raw: &#123; type: "keyword" &#125; &#125;</code>.</p>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>20</span></div>
+</div>
+
+<!-- ════ LOG MAPPING BLUEPRINT ════ -->
+<div class="slide" data-s="Data Modeling">
+  <div class="sh"><span class="chip chip-green">Data Modeling</span><h2>Log Mapping Blueprint</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <p class="body">A good log mapping separates fields used for <strong>filtering and aggregation</strong> from fields used for <strong>full-text search</strong>.</p>
+      <div class="card teal"><h4>Structured fields</h4>
+        <ul>
+          <li><code>@timestamp</code> as <code>date</code></li>
+          <li><code>service</code>, <code>level</code>, <code>env</code> as <code>keyword</code></li>
+          <li><code>latency_ms</code>, <code>status_code</code> as numbers</li>
+          <li><code>client_ip</code> as <code>ip</code>, <code>location</code> as <code>geo_point</code></li>
+        </ul>
+      </div>
+      <div class="card blue"><h4>Search fields</h4>
+        <p><code>message</code> should be <code>text</code> for full-text search, with a <code>keyword</code> subfield only when exact filtering is useful.</p></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="cblock" style="font-size:11px;">
+<span class="kw">PUT</span> /app-logs-000001
+{
+  <span class="key">"mappings"</span>: { <span class="key">"dynamic"</span>: <span class="str">"strict"</span>,
+    <span class="key">"properties"</span>: {
+      <span class="key">"@timestamp"</span>: { <span class="key">"type"</span>: <span class="str">"date"</span> },
+      <span class="key">"service"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+      <span class="key">"env"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+      <span class="key">"level"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+      <span class="key">"message"</span>: {
+        <span class="key">"type"</span>: <span class="str">"text"</span>,
+        <span class="key">"fields"</span>: { <span class="key">"raw"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span>,
+          <span class="key">"ignore_above"</span>: <span class="num">256</span> }}
+      },
+      <span class="key">"latency_ms"</span>: { <span class="key">"type"</span>: <span class="str">"integer"</span> },
+      <span class="key">"status_code"</span>: { <span class="key">"type"</span>: <span class="str">"short"</span> },
+      <span class="key">"trace_id"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+      <span class="key">"client_ip"</span>: { <span class="key">"type"</span>: <span class="str">"ip"</span> },
+      <span class="key">"location"</span>: { <span class="key">"type"</span>: <span class="str">"geo_point"</span> }
+    }}
+}
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>21</span></div>
+</div>
+
+<!-- ════ GEOSPATIAL LOGS ════ -->
+<div class="slide" data-s="Data Modeling">
+  <div class="sh"><span class="chip chip-green">Mini Lab</span><h2>Geospatial Logs</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <p class="body">Geospatial fields turn logs into maps. In this story, web logs include a client IP and an approximate location after enrichment.</p>
+      <div class="cblock" style="font-size:11px;">
+<span class="kw">POST</span> /app-logs-write/_doc
+{
+  <span class="key">"@timestamp"</span>: <span class="str">"2026-06-03T11:20:00Z"</span>,
+  <span class="key">"service"</span>: <span class="str">"auth"</span>,
+  <span class="key">"level"</span>: <span class="str">"ERROR"</span>,
+  <span class="key">"message"</span>: <span class="str">"Suspicious login burst blocked"</span>,
+  <span class="key">"client_ip"</span>: <span class="str">"41.92.113.12"</span>,
+  <span class="key">"location"</span>: { <span class="key">"lat"</span>: <span class="num">33.5731</span>, <span class="key">"lon"</span>: <span class="num">-7.5898</span> }
+}
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card blue"><h4>Query by distance</h4>
+        <div class="cblock" style="margin-top:8px;font-size:11px;">
+<span class="kw">GET</span> /app-logs-*/_search
+{ <span class="key">"query"</span>: { <span class="key">"geo_distance"</span>: {
+  <span class="key">"distance"</span>: <span class="str">"50km"</span>,
+  <span class="key">"location"</span>: { <span class="key">"lat"</span>: <span class="num">33.5731</span>, <span class="key">"lon"</span>: <span class="num">-7.5898</span> }
+}}}
+        </div>
+      </div>
+      <div class="note"><div class="nlabel">Kibana connection</div>
+        <p>This is the bridge to Maps: once <code>location</code> is a <code>geo_point</code>, participants can plot events and filter by area.</p></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>22</span></div>
+</div>
+
+<!-- ════ ANALYZERS ════ -->
+<div class="slide" data-s="Data Modeling">
+  <div class="sh"><span class="chip chip-green">Data Modeling</span><h2>Text Analysis &amp; Analyzers</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <p class="body">When you index a <code>text</code> field, ES runs it through an <strong>analyzer pipeline</strong> before storing it in the inverted index.</p>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="step"><div class="n">1</div><div class="step-body"><h4>Character filter</h4><p>Strip HTML, replace characters. <code>"&lt;b&gt;Hello&lt;/b&gt;"</code> → <code>"Hello"</code></p></div></div>
+        <div class="step"><div class="n">2</div><div class="step-body"><h4>Tokenizer</h4><p>Split on whitespace/punctuation. <code>"Hello World"</code> → <code>["Hello", "World"]</code></p></div></div>
+        <div class="step"><div class="n">3</div><div class="step-body"><h4>Token filters</h4><p>Lowercase, stemming, stopwords. <code>["Hello","World"]</code> → <code>["hello","world"]</code></p></div></div>
+      </div>
+      <div class="note">
+        <div class="nlabel">💡 Same analysis at query time</div>
+        <p>The <strong>same analyzer runs on your search query</strong>. So a query for <code>"Running"</code> matches documents with <code>"run"</code> because both get stemmed. Mismatch between index and query analyzers = missed results.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <h3 class="t">Built-in analyzers</h3>
+      <div class="card teal"><h4>standard</h4><p>Default. Unicode tokenization + lowercase. Good for most western text.</p></div>
+      <div class="card blue"><h4>english / spanish / arabic…</h4><p>Language-specific stemming + stopwords. <code>"running"</code> → <code>"run"</code>. Use when content language is known.</p></div>
+      <div class="card"><h4>keyword</h4><p>No analysis — entire input as one token (same as <code>keyword</code> field type).</p></div>
+      <div class="cblock" style="font-size:11px;">
+<span class="cmt"># Test an analyzer interactively</span>
+<span class="kw">GET</span> /_analyze
+{
+  <span class="key">"analyzer"</span>: <span class="str">"english"</span>,
+  <span class="key">"text"</span>: <span class="str">"The black cats are searching"</span>
+}
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>23</span></div>
+</div>
+
+<!-- ════ ANALYZER LAB ════ -->
+<div class="slide" data-s="Data Modeling">
+  <div class="sh"><span class="chip chip-green">Mini Lab</span><h2>Analyzer &amp; Tokenization Demo</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="practice-box">
+        <div class="title-row"><span class="chip chip-green">🧪 Exercise</span><h3>Inspect tokens before searching</h3></div>
+        <p style="font-size:13px;color:var(--body);">Use the same message as the logs dataset, then compare analyzed vs exact matching.</p>
+      </div>
+      <div class="cblock" style="font-size:11px;">
+<span class="kw">GET</span> /_analyze
+{
+  <span class="key">"analyzer"</span>: <span class="str">"standard"</span>,
+  <span class="key">"text"</span>: <span class="str">"Payment gateway timeout after 2400ms"</span>
+}
+
+<span class="kw">GET</span> /app-logs-*/_search
+{ <span class="key">"query"</span>: {
+  <span class="key">"match"</span>: { <span class="key">"message"</span>: <span class="str">"gateway timeout"</span> }
+}}
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card teal"><h4>Expected tokens</h4>
+        <p><code>payment</code>, <code>gateway</code>, <code>timeout</code>, <code>after</code>, <code>2400ms</code>. Full-text search can match subsets because the message is tokenized.</p></div>
+      <div class="card yellow"><h4>Exact matching contrast</h4>
+        <div class="cblock" style="margin-top:8px;font-size:11px;">
+<span class="kw">GET</span> /app-logs-*/_search
+{ <span class="key">"query"</span>: {
+  <span class="key">"term"</span>: { <span class="key">"message.raw"</span>: <span class="str">"Payment gateway timeout after 2400ms"</span> }
+}}
+        </div>
+      </div>
+      <div class="note"><div class="nlabel">Teaching point</div>
+        <p><code>match</code> is for analyzed text. <code>term</code> is for exact values, normally on <code>keyword</code> fields.</p></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>24</span></div>
+</div>
+
+<!-- ════ NESTED DOCUMENTS ════ -->
+<div class="slide" data-s="Data Modeling">
+  <div class="sh"><span class="chip chip-green">Data Modeling</span><h2>Nested Documents</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <p class="body">An <code>object</code> field stores sub-documents inline. An array of objects is <strong>flattened</strong> by ES — this breaks cross-field queries.</p>
+      <div class="card red">
+        <h4>⚠️ The object flattening trap</h4>
+        <p>With type <code>object</code>, a query for <code>&#123;name: "cpu", status: "critical"&#125;</code> can match a doc where CPU is OK and disk is critical — because field values are merged across array items.</p>
+      </div>
+      <div class="card green">
+        <h4>✅ Solution: <code>nested</code> type</h4>
+        <p>Use <code>"type": "nested"</code> to store each array item as a hidden sub-document. ES then preserves the relationship between fields within each object.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="cblock" style="font-size:11px;">
+<span class="cmt"># Mapping with nested type</span>
+<span class="kw">PUT</span> /system-events/_mapping
+{
+  <span class="key">"properties"</span>: {
+    <span class="key">"message"</span>: { <span class="key">"type"</span>: <span class="str">"text"</span> },
+    <span class="key">"checks"</span>: {
+      <span class="key">"type"</span>: <span class="str">"nested"</span>,
+      <span class="key">"properties"</span>: {
+        <span class="key">"name"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+        <span class="key">"status"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> }
+      }
+    }
+  }
+}
+
+<span class="cmt"># Query nested documents correctly</span>
+{ <span class="key">"nested"</span>: {
+  <span class="key">"path"</span>: <span class="str">"checks"</span>,
+  <span class="key">"query"</span>: { <span class="key">"bool"</span>: { <span class="key">"must"</span>: [
+    { <span class="key">"term"</span>: { <span class="key">"checks.name"</span>: <span class="str">"cpu"</span> }},
+    { <span class="key">"term"</span>: { <span class="key">"checks.status"</span>: <span class="str">"critical"</span> }}
+  ]}}
+}}
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>25</span></div>
+</div>
+
+<!-- ════════════════════════════════
+  SECTION: QUERY DSL
+════════════════════════════════ -->
+<div class="slide divider" data-s="Query DSL">
+  <div class="dtag">Day 1 · Morning · Block 4 of 4</div>
+  <h2>Query <em>DSL</em></h2>
+  <p class="ddesc">Elasticsearch's JSON-based query language. This is the core skill for everything that follows.</p>
+  <div class="divider-list">
+    <div class="di on"><div class="dot"></div>Query context vs filter context</div>
+    <div class="di on"><div class="dot"></div>Common leaf queries</div>
+    <div class="di on"><div class="dot"></div>The bool query — combining clauses</div>
+    <div class="di on"><div class="dot"></div>Aggregations</div>
+  </div>
+  <div class="dnum">04</div>
+  <div class="sf"><span>General Performance</span><span>26</span></div>
+</div>
+
+<!-- ════ QUERY VS FILTER ════ -->
+<div class="slide" data-s="Query DSL">
+  <div class="sh"><span class="chip chip-purple">Query DSL</span><h2>Query Context vs Filter Context</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card teal">
+        <h4>Query context — "how well does it match?"</h4>
+        <p>Computes a <strong>relevance score</strong> (<code>_score</code>) for each matching document using BM25. Use for full-text search where <em>ranking matters</em>.</p>
+      </div>
+      <div class="cblock" style="font-size:11px;">
+<span class="key">"query"</span>: {
+  <span class="key">"match"</span>: {
+    <span class="key">"title"</span>: <span class="str">"elasticsearch guide"</span>
+  }
+}
+<span class="cmt">→ returns documents scored by relevance</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card blue">
+        <h4>Filter context — "does it match? yes/no"</h4>
+        <p>No score computed. <strong>Cached by ES</strong> — much faster for structured data. Use for exact values, ranges, boolean flags.</p>
+      </div>
+      <div class="cblock" style="font-size:11px;">
+<span class="key">"filter"</span>: {
+  <span class="key">"term"</span>: {
+    <span class="key">"status"</span>: <span class="str">"published"</span>
+  }
+}
+<span class="cmt">→ yes/no, cached, no scoring overhead</span>
+      </div>
+      <div class="note">
+        <div class="nlabel">Best practice</div>
+        <p>Use <strong>filter</strong> for structured log data (service, level, status code, time range) and <strong>query</strong> only for full-text fields like <code>message</code>. Filters are cached and significantly faster.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>27</span></div>
+</div>
+
+<!-- ════ LEAF QUERIES ════ -->
+<div class="slide" data-s="Query DSL">
+  <div class="sh"><span class="chip chip-purple">Query DSL</span><h2>Common Leaf Queries</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card teal">
+        <h4><code>match</code> — full-text search</h4>
+        <p>Analyzes the query string and searches a <code>text</code> field. The standard full-text query.</p>
+        <div class="cblock" style="margin-top:8px;font-size:11px;">{ <span class="key">"match"</span>: { <span class="key">"message"</span>: <span class="str">"payment timeout"</span> }}</div>
+      </div>
+      <div class="card yellow">
+        <h4><code>term</code> — exact value</h4>
+        <p>No analysis — exact match. Use on <code>keyword</code>, <code>boolean</code>, <code>integer</code> fields.</p>
+        <div class="cblock" style="margin-top:8px;font-size:11px;">{ <span class="key">"term"</span>: { <span class="key">"level"</span>: <span class="str">"ERROR"</span> }}</div>
+      </div>
+      <div class="card blue">
+        <h4><code>terms</code> — multiple values</h4>
+        <p>Like SQL <code>IN (…)</code>.</p>
+        <div class="cblock" style="margin-top:8px;font-size:11px;">{ <span class="key">"terms"</span>: { <span class="key">"service"</span>: [<span class="str">"checkout"</span>, <span class="str">"payments"</span>] }}</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card green">
+        <h4><code>range</code> — numeric or date range</h4>
+        <p>Operators: <code>gte</code>, <code>gt</code>, <code>lte</code>, <code>lt</code>.</p>
+        <div class="cblock" style="margin-top:8px;font-size:11px;">{ <span class="key">"range"</span>: { <span class="key">"latency_ms"</span>: { <span class="key">"gte"</span>: <span class="num">1000</span> }}}</div>
+      </div>
+      <div class="card">
+        <h4><code>match_all</code> — return everything</h4>
+        <p>All documents, score = 1.0. Useful when only filtering.</p>
+        <div class="cblock" style="margin-top:8px;font-size:11px;">{ <span class="key">"match_all"</span>: {} }</div>
+      </div>
+      <div class="card purple">
+        <h4><code>multi_match</code> — search across fields</h4>
+        <p>Same as <code>match</code> but on multiple fields.</p>
+        <div class="cblock" style="margin-top:8px;font-size:11px;">{ <span class="key">"multi_match"</span>: { <span class="key">"query"</span>: <span class="str">"cache warmed"</span>, <span class="key">"fields"</span>: [<span class="str">"message"</span>, <span class="str">"error_detail"</span>] }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>28</span></div>
+</div>
+
+<!-- ════ BOOL QUERY ════ -->
+<div class="slide" data-s="Query DSL">
+  <div class="sh"><span class="chip chip-purple">Query DSL</span><h2>The Bool Query</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <p class="body">The <code>bool</code> query is the Swiss army knife — it combines other queries using logical clauses.</p>
+      <div style="background:var(--off);border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+        <div class="bool-row"><code>must</code><p>Must match. <strong>Contributes to score.</strong> Equivalent to AND.</p></div>
+        <div class="bool-row"><code>filter</code><p>Must match. <strong>No score, cached.</strong> Equivalent to AND (faster).</p></div>
+        <div class="bool-row"><code>should</code><p>Optional. <strong>Boosts score</strong> if it matches. Equivalent to OR. With <code>minimum_should_match</code>: required count.</p></div>
+        <div class="bool-row"><code>must_not</code><p>Must NOT match. <strong>No score, cached.</strong> Equivalent to NOT AND.</p></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <h3 class="t">Example — log triage</h3>
+      <div class="cblock" style="font-size:11px;">
+<span class="kw">GET</span> /app-logs-*/_search
+{
+  <span class="key">"query"</span>: { <span class="key">"bool"</span>: {
+    <span class="key">"must"</span>: [
+      { <span class="key">"match"</span>: { <span class="key">"message"</span>: <span class="str">"payment timeout"</span> }}
+    ],
+    <span class="key">"filter"</span>: [
+      { <span class="key">"term"</span>:  { <span class="key">"service"</span>: <span class="str">"checkout"</span> }},
+      { <span class="key">"range"</span>: { <span class="key">"latency_ms"</span>: { <span class="key">"gte"</span>: <span class="num">1000</span> }}}
+    ],
+    <span class="key">"must_not"</span>: [
+      { <span class="key">"term"</span>: { <span class="key">"level"</span>: <span class="str">"DEBUG"</span> }}
+    ]
+  }}
+}
+      </div>
+      <div class="note" style="margin-top:2px;">
+        <div class="nlabel">Rule of thumb</div>
+        <p>Put full-text queries in <code>must</code>, structured filters in <code>filter</code>. The filter clause will be cached and skip scoring — significantly faster for high-traffic endpoints.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>29</span></div>
+</div>
+
+<!-- ════ AGGREGATIONS ════ -->
+<div class="slide" data-s="Query DSL">
+  <div class="sh"><span class="chip chip-purple">Query DSL</span><h2>Aggregations</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <p class="body">Aggregations compute analytics <strong>over matching documents</strong>. Think SQL <code>GROUP BY</code> + aggregate functions — distributed across shards and fast when mappings, shard sizing, and hardware are right.</p>
+      <div class="card teal">
+        <h4>Bucket aggregations — group by</h4>
+        <ul>
+          <li><code>terms</code> — group by field value</li>
+          <li><code>date_histogram</code> — group by time interval</li>
+          <li><code>range</code> — group by numeric ranges</li>
+        </ul>
+      </div>
+      <div class="card blue">
+        <h4>Metric aggregations — compute stats</h4>
+        <ul>
+          <li><code>avg</code>, <code>min</code>, <code>max</code>, <code>sum</code></li>
+          <li><code>stats</code> — all metrics in one</li>
+          <li><code>cardinality</code> — distinct count (HyperLogLog, approximate)</li>
+        </ul>
+      </div>
+      <div class="note">
+        <div class="nlabel">💡 Analogy</div>
+        <p>Aggregations are like a <strong>pivot table in Excel</strong> — but distributed across the cluster, so very large datasets can be summarized without loading everything into your application.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <h3 class="t">Agg — avg latency per service</h3>
+      <div class="cblock" style="font-size:11px;">
+<span class="kw">GET</span> /app-logs-*/_search
+{
+  <span class="key">"size"</span>: <span class="num">0</span>, <span class="cmt">// no doc hits, aggs only</span>
+  <span class="key">"aggs"</span>: {
+    <span class="key">"by_service"</span>: {
+      <span class="key">"terms"</span>: {
+        <span class="key">"field"</span>: <span class="str">"service"</span>,
+        <span class="key">"size"</span>: <span class="num">10</span>
+      },
+      <span class="key">"aggs"</span>: {
+        <span class="key">"avg_latency"</span>: {
+          <span class="key">"avg"</span>: { <span class="key">"field"</span>: <span class="str">"latency_ms"</span> }
+        }
+      }
+    }
+  }
+}
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>30</span></div>
+</div>
+
+<!-- ════════════════════════════════
+  SECTION: PRACTICE DAY 1
+════════════════════════════════ -->
+<div class="slide divider" data-s="REST Labs">
+  <div class="dtag" style="color:rgba(245,197,24,.7);">Day 1 · Afternoon · Practice</div>
+  <h2>Hands-on: <em>REST API</em></h2>
+  <p class="ddesc">Setup your local cluster, then apply everything from the morning through curl or Kibana Dev Tools.</p>
+  <div class="divider-list">
+    <div class="di on"><div class="dot" style="background:var(--yellow);"></div>Setup — Docker</div>
+    <div class="di on"><div class="dot" style="background:var(--yellow);"></div>Practice 1 — CRUD operations</div>
+    <div class="di on"><div class="dot" style="background:var(--yellow);"></div>Practice 2 — Search &amp; aggregations</div>
+  </div>
+  <div class="dnum">P1</div>
+  <div class="sf"><span>General Performance</span><span>31</span></div>
+</div>
+
+<!-- ════ SETUP ════ -->
+<div class="slide" data-s="REST Labs">
+  <div class="sh"><span class="chip chip-yellow">Setup</span><h2>Docker — Elasticsearch + Kibana</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <h3 class="t">docker-compose.yml</h3>
+      <div class="cblock" style="font-size:10px;padding:14px 16px;white-space:pre;">
+<span class="key">services</span>:
+  <span class="key">elasticsearch</span>:
+    <span class="key">image</span>: <span class="str">docker.elastic.co/elasticsearch/elasticsearch:8.13.0</span>
+    <span class="key">environment</span>:
+      - <span class="str">discovery.type=single-node</span>
+      - <span class="str">xpack.security.enabled=false</span>
+      - <span class="str">ES_JAVA_OPTS=-Xms512m -Xmx512m</span>
+    <span class="key">ports</span>: [<span class="str">"9200:9200"</span>]
+
+  <span class="key">kibana</span>:
+    <span class="key">image</span>: <span class="str">docker.elastic.co/kibana/kibana:8.13.0</span>
+    <span class="key">depends_on</span>: [elasticsearch]
+    <span class="key">ports</span>: [<span class="str">"5601:5601"</span>]
+      </div>
+      <div class="cblock" style="font-size:11px;">
+docker compose up -d
+<span class="cmt"># Wait ~30s then check:</span>
+curl http://localhost:9200/_cluster/health
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card teal">
+        <h4>✅ Access points</h4>
+        <ul>
+          <li>ES API: <code>http://localhost:9200</code></li>
+          <li>Kibana UI: <code>http://localhost:5601</code></li>
+          <li>Dev Tools: Kibana → left menu → Dev Tools</li>
+        </ul>
+      </div>
+      <div class="card yellow">
+        <h4>⚠️ Memory requirements</h4>
+        <p>ES needs at least <strong>1 GB RAM</strong> available to Docker. If your machine is constrained, lower the heap: <code>-Xms256m -Xmx256m</code> in <code>ES_JAVA_OPTS</code>.</p>
+      </div>
+      <div class="card blue">
+        <h4>🛠️ Use Kibana Dev Tools</h4>
+        <p>Dev Tools provides a REST console with autocomplete, syntax validation, and no curl boilerplate. Recommended for the practice exercises.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>32</span></div>
+</div>
+
+<!-- PRACTICE 1 -->
+<div class="slide" data-s="REST Labs">
+  <div class="sh"><span class="chip chip-yellow">Practice 1</span><h2>CRUD — Create, Read, Update, Delete</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="practice-box">
+        <div class="title-row"><span class="chip chip-yellow">🧪 Exercise</span><h3>Build an <code>app-logs</code> index</h3></div>
+        <p style="font-size:13px;color:var(--body);">Fields: <code>@timestamp</code>, <code>service</code>, <code>level</code>, <code>message</code>, <code>latency_ms</code>, <code>status_code</code></p>
+      </div>
+      <div class="cblock" style="font-size:11px;"><span class="cmt"># 1 — Create index</span>
+<span class="kw">PUT</span> /app-logs
+{ <span class="key">"mappings"</span>: { <span class="key">"properties"</span>: {
+  <span class="key">"@timestamp"</span>: { <span class="key">"type"</span>: <span class="str">"date"</span> },
+  <span class="key">"service"</span>:    { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+  <span class="key">"level"</span>:      { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+  <span class="key">"message"</span>:    { <span class="key">"type"</span>: <span class="str">"text"</span> },
+  <span class="key">"latency_ms"</span>: { <span class="key">"type"</span>: <span class="str">"integer"</span> },
+  <span class="key">"status_code"</span>: { <span class="key">"type"</span>: <span class="str">"integer"</span> }
+}}}
+
+<span class="cmt"># 2 — Index a document</span>
+<span class="kw">POST</span> /app-logs/_doc
+{ <span class="key">"@timestamp"</span>: <span class="str">"2026-06-03T10:15:30Z"</span>,
+  <span class="key">"service"</span>: <span class="str">"checkout"</span>, <span class="key">"level"</span>: <span class="str">"WARN"</span>,
+  <span class="key">"message"</span>: <span class="str">"Payment gateway timeout after 2400ms"</span>,
+  <span class="key">"latency_ms"</span>: <span class="num">2400</span>, <span class="key">"status_code"</span>: <span class="num">504</span> }</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="cblock" style="font-size:11px;"><span class="cmt"># 3 — Get by ID</span>
+<span class="kw">GET</span> /app-logs/_doc/&lt;id&gt;
+
+<span class="cmt"># 4 — Update a field</span>
+<span class="kw">POST</span> /app-logs/_update/&lt;id&gt;
+{ <span class="key">"doc"</span>: { <span class="key">"level"</span>: <span class="str">"ERROR"</span> } }
+
+<span class="cmt"># 5 — Delete</span>
+<span class="kw">DELETE</span> /app-logs/_doc/&lt;id&gt;
+
+<span class="cmt"># 6 — Bulk insert</span>
+<span class="kw">POST</span> /app-logs/_bulk
+{ <span class="key">"index"</span>: {} }
+{ <span class="key">"service"</span>: <span class="str">"search"</span>, <span class="key">"level"</span>: <span class="str">"INFO"</span>, <span class="key">"message"</span>: <span class="str">"Index refresh completed in 42ms"</span>, <span class="key">"latency_ms"</span>: <span class="num">42</span> }
+{ <span class="key">"index"</span>: {} }
+{ <span class="key">"service"</span>: <span class="str">"auth"</span>, <span class="key">"level"</span>: <span class="str">"ERROR"</span>, <span class="key">"message"</span>: <span class="str">"Suspicious login burst blocked"</span>, <span class="key">"latency_ms"</span>: <span class="num">310</span> }</div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>33</span></div>
+</div>
+
+<!-- PRACTICE 2 -->
+<div class="slide" data-s="REST Labs">
+  <div class="sh"><span class="chip chip-yellow">Practice 2</span><h2>Search &amp; Aggregations</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="practice-box">
+        <div class="title-row"><span class="chip chip-yellow">🧪 Exercise</span><h3>Query the <code>app-logs</code> index</h3></div>
+      </div>
+      <div class="cblock" style="font-size:11px;"><span class="cmt"># Full-text search</span>
+<span class="kw">GET</span> /app-logs/_search
+{ <span class="key">"query"</span>: { <span class="key">"match"</span>: { <span class="key">"message"</span>: <span class="str">"timeout"</span> } } }
+
+<span class="cmt"># Filter: slow ERROR logs</span>
+<span class="kw">GET</span> /app-logs/_search
+{ <span class="key">"query"</span>: { <span class="key">"bool"</span>: {
+  <span class="key">"filter"</span>: [
+    { <span class="key">"term"</span>: { <span class="key">"level"</span>: <span class="str">"ERROR"</span> } },
+    { <span class="key">"range"</span>: { <span class="key">"latency_ms"</span>: { <span class="key">"gte"</span>: <span class="num">1000</span> } } }
+  ]
+} } }</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="cblock" style="font-size:11px;"><span class="cmt"># Avg latency per service</span>
+<span class="kw">GET</span> /app-logs/_search
+{ <span class="key">"size"</span>: <span class="num">0</span>,
+  <span class="key">"aggs"</span>: {
+    <span class="key">"per_service"</span>: {
+      <span class="key">"terms"</span>: { <span class="key">"field"</span>: <span class="str">"service"</span>, <span class="key">"size"</span>: <span class="num">10</span> },
+      <span class="key">"aggs"</span>: {
+        <span class="key">"avg_latency"</span>: { <span class="key">"avg"</span>: { <span class="key">"field"</span>: <span class="str">"latency_ms"</span> } }
+      }
+    }
+  }
+}</div>
+      <div class="card green">
+        <h4>🎯 Bonus challenge</h4>
+        <p>Add a <code>terms</code> filter on <code>service</code> for <code>checkout</code> and <code>auth</code>. Then check the mapping: <code>GET /app-logs/_mapping</code>.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>34</span></div>
+</div>
+
+<!-- SECTION LOGSTASH -->
+<div class="slide divider" data-s="Logstash">
+  <div class="dtag" style="color:rgba(109,40,217,.7);">Day 2 · Morning</div>
+  <h2><em>Logstash</em></h2>
+  <p class="ddesc">The data pipeline of the Elastic Stack. Ingest from any source, transform, and ship to Elasticsearch.</p>
+  <div class="divider-list">
+    <div class="di on"><div class="dot" style="background:#7c3aed;"></div>Input → Filter → Output</div>
+    <div class="di on"><div class="dot" style="background:#7c3aed;"></div>Grok for log parsing</div>
+    <div class="di on"><div class="dot" style="background:#7c3aed;"></div>Docker Compose log pipeline</div>
+    <div class="di on"><div class="dot" style="background:#7c3aed;"></div>Practice 3 — ingest live logs</div>
+  </div>
+  <div class="dnum">L</div>
+  <div class="sf"><span>General Performance</span><span>35</span></div>
+</div>
+
+<!-- LOGSTASH PIPELINE -->
+<div class="slide" data-s="Logstash">
+  <div class="sh"><span class="chip chip-purple">Logstash</span><h2>Input → Filter → Output</h2></div>
+  <div class="sb" style="gap:18px;">
+    <div style="display:flex;gap:10px;align-items:stretch;">
+      <div class="arch-box" style="border-left:3px solid var(--teal);">
+        <div class="icon">📥</div><h4>Input plugins</h4>
+        <p>Where data comes from</p>
+        <div style="margin-top:10px;display:flex;gap:4px;flex-wrap:wrap;justify-content:center;">
+          <span class="tag teal">file</span><span class="tag teal">beats</span><span class="tag teal">jdbc</span><span class="tag teal">kafka</span>
+        </div>
+      </div>
+      <div class="arch-arr">→</div>
+      <div class="arch-box" style="border-left:3px solid var(--blue);flex:1.5;">
+        <div class="icon">⚙️</div><h4>Filter plugins</h4>
+        <p>Parse, transform, enrich</p>
+        <div style="margin-top:10px;display:flex;gap:4px;flex-wrap:wrap;justify-content:center;">
+          <span class="tag blue">grok</span><span class="tag blue">mutate</span><span class="tag blue">date</span><span class="tag blue">geoip</span>
+        </div>
+      </div>
+      <div class="arch-arr">→</div>
+      <div class="arch-box" style="border-left:3px solid var(--yellow);">
+        <div class="icon">📤</div><h4>Output plugins</h4>
+        <p>Where data goes</p>
+        <div style="margin-top:10px;display:flex;gap:4px;flex-wrap:wrap;justify-content:center;">
+          <span class="tag yellow">elasticsearch</span><span class="tag yellow">stdout</span><span class="tag yellow">s3</span>
+        </div>
+      </div>
+    </div>
+    <div class="cblock" style="font-size:11px;"><span class="cmt"># Docker GELF logs → ES pipeline</span>
+input  { gelf { <span class="key">port</span> =&gt; <span class="num">12201</span> } }
+filter {
+  mutate { <span class="key">rename</span> =&gt; { <span class="str">"short_message"</span> =&gt; <span class="str">"message"</span> } }
+  json   { <span class="key">source</span> =&gt; <span class="str">"message"</span> <span class="key">target</span> =&gt; <span class="str">"parsed_log"</span> }
+  date   { <span class="key">match</span> =&gt; [ <span class="str">"[parsed_log][@timestamp]"</span>, <span class="str">"ISO8601"</span> ] }
+  mutate { <span class="key">add_field</span> =&gt; { <span class="str">"service"</span> =&gt; <span class="str">"%{[parsed_log][service]}"</span> } }
+}
+output { elasticsearch { <span class="key">hosts</span> =&gt; [<span class="str">"http://elasticsearch:9200"</span>]  <span class="key">index</span> =&gt; <span class="str">"app-logs-%{+YYYY.MM.dd}"</span> } }</div>
+    <div class="note"><div class="nlabel">💡 Analogy</div>
+      <p>Logstash is a <strong>factory assembly line</strong> — raw materials arrive (input), get shaped and labelled (filter), then boxed for delivery (output).</p></div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>36</span></div>
+</div>
+
+<!-- GROK -->
+<div class="slide" data-s="Logstash">
+  <div class="sh"><span class="chip chip-purple">Logstash</span><h2>Grok — Parsing Unstructured Logs</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <p class="body"><strong>Grok</strong> maps named regex patterns to log lines, turning raw strings into structured fields.</p>
+      <div class="card teal"><h4>Syntax: <code>%{PATTERN:field}</code></h4>
+        <p>Matches the named pattern and assigns the captured value to the given field name.</p></div>
+      <div class="cblock" style="font-size:11px;"><span class="cmt"># Raw line:</span>
+<span class="str">192.168.1.1 - - [15/Jan/2024:10:00:00 +0000] "GET /api HTTP/1.1" 200 512</span>
+
+<span class="cmt"># Use built-in pattern:</span>
+<span class="str">%{COMBINEDAPACHELOG}</span>
+
+<span class="cmt"># Produces fields:</span>
+<span class="cmt"># clientip, timestamp, verb, request, response, bytes</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card blue"><h4>📚 Useful built-in patterns</h4>
+        <ul>
+          <li><code>IP</code>, <code>HOSTNAME</code>, <code>URI</code></li>
+          <li><code>NUMBER</code>, <code>INT</code>, <code>POSINT</code></li>
+          <li><code>HTTPDATE</code>, <code>TIMESTAMP_ISO8601</code></li>
+          <li><code>COMBINEDAPACHELOG</code>, <code>NGINXACCESS</code></li>
+          <li><code>GREEDYDATA</code> — match anything</li>
+        </ul>
+      </div>
+      <div class="card red"><h4>⚠️ _grokparsefailure</h4>
+        <p>If grok fails, ES receives a doc tagged <code>_grokparsefailure</code>. Always validate patterns in <strong>Kibana → Grok Debugger</strong> before deploying.</p></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>37</span></div>
+</div>
+
+<!-- LIVE DOCKER PIPELINE -->
+<div class="slide" data-s="Logstash">
+  <div class="sh"><span class="chip chip-purple">Logstash</span><h2>Live Docker Compose Pipeline</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <p class="body">The local stack beside this HTML file already sends logs from every Compose service into Logstash with Docker's GELF logging driver.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="step"><div class="n">1</div><div class="step-body"><h4>Docker services emit logs</h4><p><code>elasticsearch</code>, <code>kibana</code>, <code>logstash</code>, and <code>demo-log-generator</code>.</p></div></div>
+        <div class="step"><div class="n">2</div><div class="step-body"><h4>Docker forwards GELF</h4><p>UDP <code>127.0.0.1:12201</code> carries container logs into Logstash.</p></div></div>
+        <div class="step"><div class="n">3</div><div class="step-body"><h4>Logstash parses JSON</h4><p><code>logstash/pipeline/compose-logs.conf</code> normalizes fields and dates.</p></div></div>
+        <div class="step"><div class="n">4</div><div class="step-body"><h4>Elasticsearch stores events</h4><p>Output index: <code>app-logs-%{+YYYY.MM.dd}</code>.</p></div></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <h3 class="t">Trainer commands</h3>
+      <div class="cblock" style="font-size:11px;">
+docker compose up -d
+
+docker compose logs -f demo-log-generator
+
+curl http://localhost:9200/app-logs-*/_count
+
+curl <span class="str">"http://localhost:9200/app-logs-*/_search?size=3&amp;sort=@timestamp:desc"</span>
+      </div>
+      <div class="note"><div class="nlabel">Demo hook</div>
+        <p>Pause the generator, show counts stop increasing, restart it, then watch new documents appear in Kibana Discover.</p></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>38</span></div>
+</div>
+
+<!-- PRACTICE 3 -->
+<div class="slide" data-s="Logstash">
+  <div class="sh"><span class="chip chip-purple">Practice 3</span><h2>Logstash — Ingest Live Docker Logs</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="practice-box">
+        <div class="title-row"><span class="chip chip-purple">🧪 Exercise</span><h3>Compose logs → Logstash → Elasticsearch</h3></div>
+        <p style="font-size:13px;color:var(--body);">Dataset: live JSON messages from <code>demo-log-generator</code> plus container logs from the stack.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="step"><div class="n">1</div><div class="step-body"><h4>Start the stack</h4><p><code>docker compose up -d</code>, then wait until Elasticsearch and Kibana are healthy.</p></div></div>
+        <div class="step"><div class="n">2</div><div class="step-body"><h4>Watch raw logs</h4><p><code>docker compose logs -f demo-log-generator</code> shows the messages before indexing.</p></div></div>
+        <div class="step"><div class="n">3</div><div class="step-body"><h4>Inspect Logstash output</h4><p>Open <code>logstash/pipeline/compose-logs.conf</code> and identify input, filter, output.</p></div></div>
+        <div class="step"><div class="n">4</div><div class="step-body"><h4>Validate indexed data</h4><p>Run <code>GET /app-logs-*/_search</code> and confirm <code>service</code>, <code>level</code>, and <code>latency_ms</code>.</p></div></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="cblock" style="font-size:11px;">
+<span class="kw">GET</span> /app-logs-*/_search
+{
+  <span class="key">"query"</span>: { <span class="key">"bool"</span>: {
+    <span class="key">"filter"</span>: [
+      { <span class="key">"term"</span>: { <span class="key">"service"</span>: <span class="str">"checkout"</span> }},
+      { <span class="key">"range"</span>: { <span class="key">"latency_ms"</span>: { <span class="key">"gte"</span>: <span class="num">1000</span> }}}
+    ]
+  }},
+  <span class="key">"sort"</span>: [{ <span class="key">"@timestamp"</span>: <span class="str">"desc"</span> }]
+}
+      </div>
+      <div class="card yellow"><h4>Debug tip</h4>
+        <p><code>docker compose logs -f logstash</code> — watch pipeline startup, JSON parse errors, and Elasticsearch output errors.</p></div>
+      <div class="card teal"><h4>Expected result</h4>
+        <p>New documents keep appearing in <code>app-logs-*</code>. Use the latest timestamp to prove the pipeline is live.</p></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>39</span></div>
+</div>
+
+<!-- LOGSTASH RELIABILITY -->
+<div class="slide" data-s="Logstash">
+  <div class="sh"><span class="chip chip-purple">Logstash</span><h2>Pipeline Reliability &amp; Troubleshooting</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card red"><h4>Failure signals to teach</h4>
+        <ul>
+          <li><code>_jsonparsefailure</code> — message is not valid JSON</li>
+          <li><code>_grokparsefailure</code> — regex pattern did not match</li>
+          <li>Missing <code>@timestamp</code> — date filter did not parse</li>
+          <li>Elasticsearch output error — mapping conflict or ES unavailable</li>
+        </ul>
+      </div>
+      <div class="card yellow"><h4>Debugging order</h4>
+        <ul>
+          <li>Check input is receiving events</li>
+          <li>Print the event with <code>stdout { codec =&gt; rubydebug }</code></li>
+          <li>Validate filters one by one</li>
+          <li>Only then write to Elasticsearch</li>
+        </ul>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="cblock" style="font-size:11px;">
+filter {
+  <span class="kw">if</span> [message] =~ <span class="str">/^\{/</span> {
+    json { <span class="key">source</span> =&gt; <span class="str">"message"</span> <span class="key">target</span> =&gt; <span class="str">"parsed_log"</span> }
+  } <span class="kw">else</span> {
+    mutate { <span class="key">add_tag</span> =&gt; [<span class="str">"unstructured_log"</span>] }
+  }
+
+  <span class="kw">if</span> <span class="str">"_jsonparsefailure"</span> <span class="kw">in</span> [tags] {
+    mutate { <span class="key">add_field</span> =&gt; { <span class="str">"pipeline_status"</span> =&gt; <span class="str">"needs_review"</span> } }
+  }
+}
+      </div>
+      <div class="note"><div class="nlabel">Trainer demo</div>
+        <p>Intentionally send one malformed message, show the failure tag in Discover, then fix the pipeline or input message.</p></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>40</span></div>
+</div>
+
+<!-- SECTION KIBANA -->
+<div class="slide divider" data-s="Kibana">
+  <div class="dtag" style="color:rgba(29,78,216,.6);">Day 2 · Morning</div>
+  <h2><em>Kibana</em></h2>
+  <p class="ddesc">The visualization and management layer of the Elastic Stack.</p>
+  <div class="divider-list">
+    <div class="di on"><div class="dot" style="background:#2563eb;"></div>Sidebar orientation</div>
+    <div class="di on"><div class="dot" style="background:#2563eb;"></div>Discover</div>
+    <div class="di on"><div class="dot" style="background:#2563eb;"></div>Lens &amp; Dashboards</div>
+    <div class="di on"><div class="dot" style="background:#2563eb;"></div>Dashboard build recipe</div>
+    <div class="di on"><div class="dot" style="background:#2563eb;"></div>Practice 4 — live app dashboard</div>
+  </div>
+  <div class="dnum">K</div>
+  <div class="sf"><span>General Performance</span><span>41</span></div>
+</div>
+
+<!-- KIBANA SIDEBAR -->
+<div class="slide" data-s="Kibana">
+  <div class="sh"><span class="chip chip-blue">Kibana</span><h2>Sidebar Navigation</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <p class="body">Kibana's left sidebar is the map of the product. For this training, participants only need a few areas, and each one connects to a concrete task.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="step"><div class="n">1</div><div class="step-body"><h4>Stack Management</h4><p>Create the <code>app-logs-*</code> data view, inspect index mappings, and manage saved objects.</p></div></div>
+        <div class="step"><div class="n">2</div><div class="step-body"><h4>Dev Tools</h4><p>Run REST API requests against Elasticsearch with autocomplete and formatted responses.</p></div></div>
+        <div class="step"><div class="n">3</div><div class="step-body"><h4>Discover</h4><p>Validate indexed documents, filter with KQL, and save searches for dashboards.</p></div></div>
+        <div class="step"><div class="n">4</div><div class="step-body"><h4>Dashboard / Visualize Library</h4><p>Build and present Lens panels from the live log stream.</p></div></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card blue"><h4>Trainer walkthrough path</h4>
+        <ul>
+          <li><strong>Stack Management</strong> → Data Views → create <code>app-logs-*</code></li>
+          <li><strong>Dev Tools</strong> → run <code>GET /app-logs-*/_search</code></li>
+          <li><strong>Discover</strong> → filter <code>level: ERROR</code></li>
+          <li><strong>Dashboard</strong> → create Lens panels and save the dashboard</li>
+        </ul>
+      </div>
+      <div class="card yellow"><h4>Fast navigation tips</h4>
+        <ul>
+          <li>Use the global search at the top to jump to apps quickly</li>
+          <li>Collapse or expand the sidebar depending on screen space</li>
+          <li>Keep the time picker visible: most log problems are time-range problems</li>
+        </ul>
+      </div>
+      <div class="note"><div class="nlabel">Version note</div>
+        <p>Names and grouping can move slightly between Kibana versions, but these areas remain the core navigation path for the workshop.</p></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>42</span></div>
+</div>
+
+<!-- KIBANA DISCOVER -->
+<div class="slide" data-s="Kibana">
+  <div class="sh"><span class="chip chip-blue">Kibana</span><h2>Discover</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <p class="body"><strong>Discover</strong> is the raw data explorer — browse documents, filter by time, and validate your data before building any visualization.</p>
+      <div class="card teal"><h4>Workflow</h4>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;">
+          <div class="step"><div class="n">1</div><div class="step-body"><h4>Select data view</h4><p>e.g. <code>app-logs-*</code></p></div></div>
+          <div class="step"><div class="n">2</div><div class="step-body"><h4>Set time range</h4><p>Top-right time picker</p></div></div>
+          <div class="step"><div class="n">3</div><div class="step-body"><h4>Write KQL query</h4><p><code>level: ERROR and service: checkout</code></p></div></div>
+          <div class="step"><div class="n">4</div><div class="step-body"><h4>Save search</h4><p>Reuse in dashboard panels</p></div></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card blue"><h4>KQL — Kibana Query Language</h4>
+        <ul>
+          <li><code>level: ERROR</code> — exact level filter</li>
+          <li><code>service: check*</code> — wildcard</li>
+          <li><code>level: WARN or level: ERROR</code></li>
+          <li><code>latency_ms &gt; 1000</code> — range</li>
+          <li><code>message: "gateway timeout"</code></li>
+        </ul>
+      </div>
+      <div class="note"><div class="nlabel">⚠️ First: create a Data View</div>
+        <p>Stack Management → Data Views → <code>app-logs-*</code>. Set <code>@timestamp</code> as time field. Without this Kibana cannot query your index over time.</p></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>43</span></div>
+</div>
+
+<!-- KIBANA LENS -->
+<div class="slide" data-s="Kibana">
+  <div class="sh"><span class="chip chip-blue">Kibana</span><h2>Lens &amp; Dashboards</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <p class="body"><strong>Lens</strong> is a drag-and-drop chart builder. Define the axes — Lens picks the best chart type or you choose manually.</p>
+      <div class="card blue"><h4>Chart types</h4>
+        <ul>
+          <li>Bar, line, area — time series</li>
+          <li>Pie / donut — proportional</li>
+          <li>Data table — exact values</li>
+          <li>Metric — big KPI number</li>
+          <li>Heatmap — two-dimensional</li>
+        </ul>
+      </div>
+      <div class="card teal"><h4>Dashboards</h4>
+        <p>Combine panels. Shared KQL bar and time filter applies to all panels simultaneously. Click a segment to drill down the whole dashboard.</p></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card green"><h4>Auto-refresh for live monitoring</h4>
+        <p>Dashboard → Auto refresh. Set to 10s with "last 15 minutes" window for a live ops view.</p></div>
+      <div class="note"><div class="nlabel">💡 Tip — Metric panels</div>
+        <p>Use <strong>Metric</strong> panels for top-line KPIs (total requests, error count, unique visitors). They convey status instantly without chart reading.</p></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>44</span></div>
+</div>
+
+<!-- KIBANA DASHBOARD RECIPE -->
+<div class="slide" data-s="Kibana">
+  <div class="sh"><span class="chip chip-blue">Kibana</span><h2>Dashboard Build Recipe</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <p class="body">Build the dashboard from questions, not chart types. Each panel should answer one operational question about the live logs.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="step"><div class="n">1</div><div class="step-body"><h4>Is traffic flowing?</h4><p>Line chart: document count over <code>@timestamp</code>.</p></div></div>
+        <div class="step"><div class="n">2</div><div class="step-body"><h4>Which services are noisy?</h4><p>Bar chart: count by <code>service</code>, split by <code>level</code>.</p></div></div>
+        <div class="step"><div class="n">3</div><div class="step-body"><h4>Where is latency high?</h4><p>Metric or bar chart: average or 95th percentile <code>latency_ms</code> by service.</p></div></div>
+        <div class="step"><div class="n">4</div><div class="step-body"><h4>What happened last?</h4><p>Saved Discover table: latest ERROR/WARN events with <code>trace_id</code>.</p></div></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card teal"><h4>Dashboard controls</h4>
+        <ul>
+          <li>Time picker: last 15 minutes</li>
+          <li>Auto-refresh: 10 or 30 seconds</li>
+          <li>Filter pills: <code>service</code>, <code>level</code>, <code>env</code></li>
+        </ul>
+      </div>
+      <div class="card yellow"><h4>Good demo moment</h4>
+        <p>Click the <code>checkout</code> bar, watch all panels filter together, then clear the filter and show the dashboard returning to the full system view.</p></div>
+      <div class="note"><div class="nlabel">Quality bar</div>
+        <p>A dashboard should tell an operator where to look next within 30 seconds.</p></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>45</span></div>
+</div>
+
+<!-- PRACTICE 4 -->
+<div class="slide" data-s="Kibana">
+  <div class="sh"><span class="chip chip-blue">Practice 4</span><h2>Build a Log Monitoring Dashboard</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="practice-box">
+        <div class="title-row"><span class="chip chip-blue">🧪 Exercise</span><h3>App logs → Kibana dashboard</h3></div>
+        <p style="font-size:13px;color:var(--body);">Using data from Practice 3</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="step"><div class="n">1</div><div class="step-body"><h4>Events over time</h4><p>Area chart — <code>@timestamp</code> X axis, doc count Y axis.</p></div></div>
+        <div class="step"><div class="n">2</div><div class="step-body"><h4>Error volume by service</h4><p>Bar chart — filter <code>level: ERROR</code>, bucket by <code>service</code>.</p></div></div>
+        <div class="step"><div class="n">3</div><div class="step-body"><h4>Latency by service</h4><p>Bar or table — average or percentile of <code>latency_ms</code> by <code>service</code>.</p></div></div>
+        <div class="step"><div class="n">4</div><div class="step-body"><h4>Latest incidents</h4><p>Saved Discover view — show <code>@timestamp</code>, <code>service</code>, <code>level</code>, <code>message</code>, <code>trace_id</code>.</p></div></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card teal"><h4>Add KPI metrics</h4>
+        <ul>
+          <li>Total events — doc count</li>
+          <li>Error count — filter <code>level: ERROR</code></li>
+          <li>Distinct traces — cardinality on <code>trace_id</code></li>
+        </ul>
+      </div>
+      <div class="card yellow"><h4>🎯 Bonus</h4>
+        <p>Click an ERROR bar for <code>checkout</code> — the whole dashboard filters. Set auto-refresh to 30s for a live demo effect.</p></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>46</span></div>
+</div>
+
+<!-- SECTION PYTHON -->
+<div class="slide divider" data-s="Python">
+  <div class="dtag" style="color:rgba(22,101,52,.7);">Day 2 · Final Exercise</div>
+  <h2>Python &amp; <em>Elasticsearch</em></h2>
+  <p class="ddesc">The official <code>elasticsearch-py</code> client. Index, search, and build an ETL pipeline in Python.</p>
+  <div class="divider-list">
+    <div class="di on"><div class="dot" style="background:#16a34a;"></div>REST API in applications</div>
+    <div class="di on"><div class="dot" style="background:#16a34a;"></div>Python and Java client patterns</div>
+    <div class="di on"><div class="dot" style="background:#16a34a;"></div>Bulk indexing with generators</div>
+    <div class="di on"><div class="dot" style="background:#16a34a;"></div>Practice 5 — ETL capstone</div>
+  </div>
+  <div class="dnum">Py</div>
+  <div class="sf"><span>General Performance</span><span>47</span></div>
+</div>
+
+<!-- APPLICATION INTEGRATION -->
+<div class="slide" data-s="Python">
+  <div class="sh"><span class="chip chip-green">Applications</span><h2>Elasticsearch in Application Code</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <p class="body">Applications usually treat Elasticsearch as a <strong>search and analytics read model</strong>. The primary database remains the source of truth; Elasticsearch is updated asynchronously or through controlled bulk jobs.</p>
+      <div class="card teal"><h4>Integration patterns</h4>
+        <ul>
+          <li>REST calls from any language for simple operations</li>
+          <li>Official clients for retries, connection pooling, and typed APIs</li>
+          <li>Bulk indexing for backfills and batch ingestion</li>
+          <li>Aliases so app code does not change when indices rotate</li>
+        </ul>
+      </div>
+      <div class="card red"><h4>Production cautions</h4>
+        <p>Handle retries carefully, do not index invalid mappings blindly, and keep search requests bounded with time filters, pagination, and explicit result sizes.</p></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <h3 class="t">Same REST idea, different clients</h3>
+      <div class="cblock" style="font-size:11px;">
+<span class="cmt"># REST</span>
+curl -XGET <span class="str">"localhost:9200/app-logs-*/_search"</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"query":{"match":{"message":"timeout"}}}'</span>
+
+<span class="cmt"># Python client</span>
+es.search(index=<span class="str">"app-logs-*"</span>,
+          query={<span class="str">"match"</span>: {<span class="str">"message"</span>: <span class="str">"timeout"</span>}})
+
+<span class="cmt"># Java client, same operation conceptually</span>
+client.search(s -&gt; s.index(<span class="str">"app-logs-*"</span>)
+  .query(q -&gt; q.match(m -&gt; m.field(<span class="str">"message"</span>).query(<span class="str">"timeout"</span>))),
+  LogEvent.class);
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>48</span></div>
+</div>
+
+<!-- PYTHON CLIENT -->
+<div class="slide" data-s="Python">
+  <div class="sh"><span class="chip chip-green">Python</span><h2>Client Setup &amp; Basic Operations</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="cblock" style="font-size:11px;"><span class="cmt"># Install</span>
+pip install elasticsearch
+
+<span class="kw">from</span> elasticsearch <span class="kw">import</span> Elasticsearch, helpers
+
+<span class="cmt"># Connect</span>
+es = Elasticsearch(<span class="str">"http://localhost:9200"</span>)
+print(es.info()[<span class="str">"version"</span>][<span class="str">"number"</span>])
+
+<span class="cmt"># Index a document</span>
+es.index(index=<span class="str">"app-logs"</span>, document={
+  <span class="str">"@timestamp"</span>: <span class="str">"2026-06-03T10:30:00Z"</span>,
+  <span class="str">"service"</span>: <span class="str">"recommendations"</span>,
+  <span class="str">"level"</span>: <span class="str">"INFO"</span>,
+  <span class="str">"message"</span>: <span class="str">"Recommendation cache warmed in 87ms"</span>,
+  <span class="str">"latency_ms"</span>: <span class="num">87</span>
+})</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="cblock" style="font-size:11px;"><span class="cmt"># Search</span>
+resp = es.search(
+  index=<span class="str">"app-logs"</span>,
+  query={<span class="str">"match"</span>: {<span class="str">"message"</span>: <span class="str">"cache warmed"</span>}}
+)
+<span class="kw">for</span> hit <span class="kw">in</span> resp[<span class="str">"hits"</span>][<span class="str">"hits"</span>]:
+  print(hit[<span class="str">"_score"</span>], hit[<span class="str">"_source"</span>][<span class="str">"message"</span>])
+
+<span class="cmt"># Bulk — 10x faster</span>
+<span class="kw">def</span> <span class="fn">gen_docs</span>(rows):
+  <span class="kw">for</span> row <span class="kw">in</span> rows:
+    <span class="kw">yield</span> {<span class="str">"_index"</span>: <span class="str">"app-logs"</span>, <span class="str">"_source"</span>: row}
+
+helpers.bulk(es, gen_docs(my_data))</div>
+      <div class="card yellow"><h4>⚠️ v8 API change</h4>
+        <p>In <code>elasticsearch-py</code> 8.x, <code>body=</code> is deprecated. Use keyword args: <code>es.search(index=..., query=...)</code> directly.</p></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>49</span></div>
+</div>
+
+<!-- PRACTICE 5 -->
+<div class="slide" data-s="Python">
+  <div class="sh"><span class="chip chip-green">Practice 5 — Capstone</span><h2>Python ETL Pipeline</h2></div>
+  <div class="sb two" style="align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="practice-box">
+        <div class="title-row"><span class="chip chip-green">🧪 Exercise</span><h3>Read CSV → clean → index → query</h3></div>
+        <p style="font-size:13px;color:var(--body);">Dataset: <code>app_logs.csv</code> — timestamp, service, level, message, latency_ms, status_code</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="step"><div class="n">1</div><div class="step-body"><h4>Create index with explicit mapping</h4><p>timestamp (date), service/level (keyword), message (text), latency/status (integer)</p></div></div>
+        <div class="step"><div class="n">2</div><div class="step-body"><h4>ETL with generator + bulk</h4><p>Parse timestamps, convert numbers, normalize log levels.</p></div></div>
+        <div class="step"><div class="n">3</div><div class="step-body"><h4>Find critical incidents</h4><p>Filter <code>level: ERROR</code>, sort <code>latency_ms</code> desc, print top messages.</p></div></div>
+        <div class="step"><div class="n">4</div><div class="step-body"><h4>Agg: avg latency per service</h4><p>Terms agg on service × avg latency. Print as a terminal bar chart.</p></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="cblock" style="font-size:11px;"><span class="kw">from</span> elasticsearch <span class="kw">import</span> Elasticsearch, helpers
+<span class="kw">import</span> csv
+
+es = Elasticsearch(<span class="str">"http://localhost:9200"</span>)
+
+<span class="cmt"># TODO 1 — create index</span>
+<span class="cmt"># es.indices.create(index="app-logs", mappings={...})</span>
+
+<span class="kw">def</span> <span class="fn">gen_docs</span>(path):
+  <span class="kw">with</span> open(path) <span class="kw">as</span> f:
+    <span class="kw">for</span> row <span class="kw">in</span> csv.DictReader(f):
+      <span class="cmt"># TODO 2 — parse timestamp, convert latency/status</span>
+      <span class="kw">yield</span> {<span class="str">"_index"</span>: <span class="str">"app-logs"</span>, <span class="str">"_source"</span>: row}
+
+helpers.bulk(es, gen_docs(<span class="str">"app_logs.csv"</span>))
+<span class="cmt"># TODO 3 — search critical incidents</span>
+<span class="cmt"># TODO 4 — agg avg latency by service</span></div>
+    </div>
+  </div>
+  <div class="sf"><span>General Performance</span><span>50</span></div>
+</div>
+
+<!-- CLOSING -->
+<div class="slide cover" data-s="Python">
+  <div class="eyebrow">Training complete</div>
+  <h1>Thank you for<br>your <em>attention</em></h1>
+  <p class="sub">Questions, feedback, next steps — the trainer is here.</p>
+  <p class="meta" style="margin-top:12px;">El Mehdi BENYOUSSEF · General Performance<br>
+  <span style="color:var(--teal);font-family:var(--mono);font-size:11px;">github.com/ElMehdiBen/Big-Data-101</span></p>
+  <div class="cover-deco"><div class="cover-deco-inner">🚀</div></div>
+  <div class="sf"><span>General Performance</span><span>51</span></div>
+</div>
+
+</div><!-- /deck -->
+</div><!-- /stage -->
+
+<script>
+const slides = [...document.querySelectorAll('.slide')];
+const scEl   = document.getElementById('sc');
+const pbar   = document.getElementById('pbar');
+const sstrip = document.getElementById('section-strip');
+const stage  = document.getElementById('stage');
+const BASE_W = 1040;
+const BASE_H = 585;
+const MAX_DESKTOP_SCALE = 1.45;
+let cur = 0;
+function numberFooters() {
+  slides.forEach((slide, i) => {
+    const footerNumber = slide.querySelector('.sf span:last-child');
+    if (footerNumber) footerNumber.textContent = String(i + 1).padStart(2, '0');
+  });
+}
+numberFooters();
+const sections = [...new Set(slides.map(s => s.dataset.s))];
+sections.forEach(sec => {
+  const t = document.createElement('div');
+  t.className = 'stab'; t.textContent = sec;
+  t.onclick = () => { const i = slides.findIndex(s => s.dataset.s === sec); if (i >= 0) go(i); };
+  sstrip.appendChild(t);
+});
+function updateTabs() {
+  const cs = slides[cur].dataset.s;
+  document.querySelectorAll('.stab').forEach(t => t.classList.toggle('on', t.textContent === cs));
+}
+function go(n) {
+  slides[cur].classList.remove('on');
+  cur = Math.max(0, Math.min(slides.length - 1, n));
+  slides[cur].classList.add('on');
+  scEl.textContent = cur+1+'/'+slides.length;
+  pbar.style.width = ((cur+1)/slides.length*100)+'%';
+  updateTabs();
+  fitDeck();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function next() { go(cur+1); }
+function prev() { go(cur-1); }
+function fitDeck() {
+  const stacked = window.matchMedia('(max-width: 760px)').matches;
+  if (stacked) {
+    document.documentElement.style.setProperty('--deck-scale', '1');
+    stage.style.width = '';
+    stage.style.height = '';
+    return;
+  }
+
+  const active = slides[cur] || slides[0];
+  const slideH = Math.max(BASE_H, active.scrollHeight);
+  const availableW = Math.max(320, window.innerWidth - 48);
+  const availableH = Math.max(320, window.innerHeight - 108);
+  const scale = Math.min(MAX_DESKTOP_SCALE, availableW / BASE_W, availableH / slideH);
+
+  document.documentElement.style.setProperty('--deck-scale', scale.toFixed(3));
+  stage.style.width = Math.ceil(BASE_W * scale) + 'px';
+  stage.style.height = Math.ceil(24 + slideH * scale + 80) + 'px';
+}
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowRight'||e.key==='ArrowDown') next();
+  if (e.key==='ArrowLeft'||e.key==='ArrowUp') prev();
+});
+window.addEventListener('resize', fitDeck);
+go(0);
+</script>
+</body>
+</html>
